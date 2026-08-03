@@ -1,6 +1,25 @@
 # AI Platform Repository
 
-`ai-platform` は、TypeScript / Python プロジェクトで共通に使うコーディングエージェント向けのルール、タスクプロンプト、GitHub テンプレート、CI 失敗サマリーを一元管理する正本です。各プロジェクトには技術構成・アーキテクチャ・DB/API・デプロイなどの固有情報だけを保持し、共通方針はここから参照または同期します。
+## 概要
+
+`ai-platform` は、TypeScript / Python プロジェクトで共通に使うコーディングエージェント向けのルール、タスクプロンプト、GitHub テンプレート、CI 失敗サマリーを一元管理する正本です。各プロジェクトに同じルールを複製して保守するのではなく、共通部分はこのリポジトリで管理し、個別リポジトリにはそのプロジェクトにだけ必要な情報を置きます。
+
+| 管理場所 | 管理する内容 |
+| --- | --- |
+| `ai-platform` | 安全・品質の共通ルール、Issue/PR/CI 用のプロンプト、GitHub テンプレート、再利用可能な Workflow |
+| 各プロジェクト | 使用技術、アーキテクチャ、検証コマンド、変更禁止領域、DB/API・デプロイ固有の制約 |
+
+このリポジトリはアプリケーション本体や各プロジェクトの業務仕様を持ちません。共通ルールを参照・同期しつつ、実装判断は必ず対象プロジェクトのコード、テスト、`AGENTS.md`、Issue/PR を根拠に行います。
+
+## 使い方（最短手順）
+
+新しいプロジェクトには、まず次の3点を導入します。
+
+1. `templates/AGENTS.project-template.md` を対象プロジェクトの `AGENTS.md` としてコピーし、固有情報を記入します。
+2. 必要な GitHub テンプレートを PR 経由で追加します。Issue Form は `.github/ISSUE_TEMPLATE/ai-platform.yml`、PR テンプレートは `.github/pull_request_template.md` に配置します。
+3. ChatGPT Work には、対象タスクに対応する `prompts/` のファイル、プロジェクトの `AGENTS.md`、Issue/PR、関連する CI ログを一緒に渡します。
+
+既存の `AGENTS.md` やテンプレートがあるプロジェクトでは、上書きせず差分をレビューして統合してください。以後の更新も、同期用 Pull Request または各プロジェクト側の Pull Request で反映します。
 
 ## 構成
 
@@ -22,24 +41,25 @@
 | `.github/workflows/sync-agent-rules.yml` | 対象プロジェクトへ同期用 PR を作る手動 workflow |
 | `.github/sync-targets.json` | 同期の対象・対象ファイル・opt-in 状態を管理する設定 |
 
-## 新しいプロジェクトへの導入
-
-1. `templates/AGENTS.project-template.md` を対象プロジェクトの `AGENTS.md` にコピーし、使用技術・検証コマンド・変更禁止領域などを埋めます。
-2. 必要なら `templates/issue-form.yml` を `.github/ISSUE_TEMPLATE/ai-platform.yml`、`templates/pull-request-template.md` を `.github/pull_request_template.md` に導入します。既存テンプレートがあれば内容を比較して PR で統合してください。
-3. CI の失敗ログをファイルに保存するジョブを用意し、下記の reusable workflow を `uses` で呼び出します。
-4. ChatGPT Work に渡す際は、共通プロンプトとプロジェクトの `AGENTS.md` を併用します。Issue / PR の情報は `prepare-agent-context.py` で Markdown にすると扱いやすくなります。
-5. 導入・更新ともに対象プロジェクトのブランチで行い、レビュー可能な Pull Request を作成してからマージします。
-
 ## ChatGPT Work での利用
 
-Issue 実装では `prompts/implement-issue.md` を、CI 修正では `prompts/fix-ci.md` を、レビューでは `prompts/review-pr.md` を使います。対象 Issue / PR と関連ログを渡し、プロジェクト固有の `AGENTS.md` にある制約を優先させます。
+用途に応じて、以下のプロンプトを選びます。対象 Issue / PR と関連ログを渡し、プロジェクト固有の `AGENTS.md` にある制約を優先させます。
+
+| 作業 | 使用するプロンプト | 期待する結果 |
+| --- | --- | --- |
+| Issue を実装する | `prompts/implement-issue.md` | 調査、最小実装、検証、PR 用の報告 |
+| CI を直す | `prompts/fix-ci.md` | 失敗原因、最小修正、再現・検証結果 |
+| PR をレビューする | `prompts/review-pr.md` | 品質・セキュリティ・互換性の指摘 |
+| 変更せずに調査する | `prompts/investigate-issue.md` | 原因、選択肢、推奨対応 |
+
+Issue/PR の情報を `prepare-agent-context.py` で整形し、失敗ログを `summarize-ci.py` で要約してから渡すと、必要な制約と根拠を短く共有できます。
 
 ```bash
 python scripts/prepare-agent-context.py --input issue.json --kind issue --ci-summary ci-summary.md > agent-context.md
 python scripts/summarize-ci.py --input failed-ci.log --workflow-name CI --run-url "https://github.com/OWNER/REPO/actions/runs/123" > ci-summary.md
 ```
 
-どちらのスクリプトも標準ライブラリのみを使用します。詳細な入力形式とオプションは各スクリプトの `--help` を参照してください。
+生成した `agent-context.md`、対応するタスクプロンプト、対象プロジェクトの `AGENTS.md` を ChatGPT Work に添付し、「このコンテキストに従って実装・検証・報告して」と依頼します。どちらのスクリプトも標準ライブラリのみを使用します。詳細な入力形式とオプションは各スクリプトの `--help` を参照してください。
 
 ## Reusable Workflow の呼び出し例
 
@@ -73,12 +93,9 @@ jobs:
       run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
       reproduce_command: npm test
       comment_on_pr: true
-    secrets:
-      # private な AI Platform を使う same-repository 実行時だけ渡す
-      platform_read_token: ${{ secrets.AI_PLATFORM_READ_TOKEN }}
 ```
 
-`reusable-ci-summary.yml` は呼び出し側のリポジトリを読み取り専用で checkout し、AI Platform の `summarize-ci.py` を別途 checkout して Job Summary を生成します。`sj55576/ai-platform` を private 運用にする場合は、呼び出し側が read-only の `platform_read_token` を明示的に渡せます。資格情報は永続化せず、トークンがない・取得できない場合は Secret を要求せずに要約を安全にスキップして理由だけを Job Summary に残します。外部 fork の PR では platform checkout、コメントジョブ、渡された Secret のいずれも実行・参照しません。コメントには識別マーカーを付け、既存コメントを更新するため重複投稿を避けます。
+`reusable-ci-summary.yml` は呼び出し側のリポジトリを読み取り専用で checkout し、AI Platform の `summarize-ci.py` を別途 checkout して Job Summary を生成します。AI Platform は public のため、通常は追加トークンを渡す必要がありません。外部 fork の PR では platform checkout、コメントジョブ、渡された Secret のいずれも実行・参照しません。コメントには識別マーカーを付け、既存コメントを更新するため重複投稿を避けます。
 
 ## 更新と同期の運用
 
