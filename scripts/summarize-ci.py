@@ -143,7 +143,7 @@ def render_summary(
             "## Actions run URL",
             f"- {mask_secrets(run_url)}",
             "",
-            "## ChatGPT Work repair request",
+            "## Coding agent repair request",
             prompt,
         )
     ) + "\n"

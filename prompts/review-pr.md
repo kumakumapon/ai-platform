@@ -1,6 +1,12 @@
+---
+description: PR を品質・セキュリティ・互換性の観点でレビューする（コードは変更しない）
+argument-hint: [pr-url-or-number]
+disable-model-invocation: true
+---
+
 # PR レビュープロンプト
 
-`prompts/coding-agent-typescript-python.md` とプロジェクト固有の `AGENTS.md` をあわせて適用する。レビューではコード変更を行わず、明示的に依頼された場合だけ別途修正を行う。
+共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。レビューではコード変更を行わず、明示的に依頼された場合だけ別途修正を行う。
 
 ## 入力情報
 

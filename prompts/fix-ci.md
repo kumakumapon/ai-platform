@@ -1,6 +1,12 @@
+---
+description: CI の失敗原因を特定し、最小差分で修正して再検証する
+argument-hint: [run-url-or-pr]
+disable-model-invocation: true
+---
+
 # CI 失敗修正プロンプト
 
-`prompts/coding-agent-typescript-python.md` とプロジェクト固有の `AGENTS.md` をあわせて適用する。
+共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。
 
 ## 入力情報
 

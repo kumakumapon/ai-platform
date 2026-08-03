@@ -1,6 +1,12 @@
+---
+description: コードを変更せずに原因を調査し、対応案を比較して提示する
+argument-hint: [issue-url-or-number]
+disable-model-invocation: true
+---
+
 # Issue 調査プロンプト（コード変更なし）
 
-`prompts/coding-agent-typescript-python.md` とプロジェクト固有の `AGENTS.md` をあわせて適用する。このタスクでは、明示的な指示がない限りコード、設定、Issue、PR を変更しない。
+共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。このタスクでは、明示的な指示がない限りコード、設定、Issue、PR を変更しない。
 
 ## 入力情報
 
