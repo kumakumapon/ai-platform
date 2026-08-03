@@ -44,6 +44,41 @@
 | `.github/workflows/sync-agent-rules.yml` | 対象プロジェクトへ同期用 PR を作る手動 workflow |
 | `.github/sync-targets.json` | 同期の対象・対象ファイル・opt-in 状態を管理する設定 |
 
+## クイック依頼（ChatGPT Work）
+
+長い依頼文を毎回書かずに済むよう、ChatGPT Project に共通指示を一度だけ登録しておけば、
+以後は対象と作業種別を1行で指定できます。ChatGPT Project は、Project instructions と Sources を
+複数のチャットで共有できるため、この用途に向いています。[OpenAI Docs: Projects and chats](https://learn.chatgpt.com/docs/projects)
+
+### 初回設定（1回だけ）
+
+1. ChatGPT Work で開発用の Project を作成する。
+2. `templates/CHATGPT-WORK.project-instructions.md` の本文を Project instructions に貼り付ける。
+3. Project の Sources に `prompts/quick-request.md` と `prompts/coding-agent-typescript-python.md` を追加する。
+4. 対象プロジェクトの `AGENTS.md` / `CLAUDE.md` はリポジトリから確認させるか、固有ルールを確実に共有したい場合は Sources に追加する。
+
+Project instructions と Sources はプロジェクト内の全チャットで共有されます。作業ごとに新しいチャットを
+開始すると、依頼は短くしつつ、過去の作業と混ざらずに進められます。
+
+### 以後の依頼
+
+次の4形式だけを使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。
+
+| 目的 | そのまま送る依頼 |
+| --- | --- |
+| Issue を実装して PR を作る | `実装 sj55576/MiniStr #96 PR作成` |
+| CI を直して PR を作る | `CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正 PR作成` |
+| PR をレビューする | `レビュー sj55576/MiniStr #42` |
+| Issue を調査するだけ | `調査 sj55576/MiniStr #97` |
+
+エージェントは、対象リポジトリ、Issue/PR、`AGENTS.md` / `CLAUDE.md`、関連コード、既存テストを
+確認してから作業します。実装を左右する重大な不明点だけを質問し、Issue/PR に書かれている内容を
+再入力させません。認証・認可・DB・公開 API・デプロイの変更など、根拠が必要な判断は確認してから進めます。
+
+Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
+`.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo #番号 PR作成`
+のように利用できます。
+
 ## タスクプロンプトの使い分け
 
 用途に応じて、以下のプロンプトを選びます。対象 Issue / PR と関連ログを渡し、プロジェクト固有の `AGENTS.md` にある制約を優先させます。プロンプト本文はエージェント非依存です。
