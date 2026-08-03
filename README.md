@@ -17,7 +17,9 @@
 
 1. `templates/AGENTS.project-template.md` を対象プロジェクトの `AGENTS.md` としてコピーし、固有情報を記入します。
 2. 必要な GitHub テンプレートを PR 経由で追加します。Issue Form は `.github/ISSUE_TEMPLATE/ai-platform.yml`、PR テンプレートは `.github/pull_request_template.md` に配置します。
-3. ChatGPT Work には、対象タスクに対応する `prompts/` のファイル、プロジェクトの `AGENTS.md`、Issue/PR、関連する CI ログを一緒に渡します。
+3. 使用するエージェントに合わせて渡し方を選びます。
+   - ChatGPT Work: 対象タスクに対応する `prompts/` のファイル、プロジェクトの `AGENTS.md`、Issue/PR、関連する CI ログを一緒に渡します。
+   - Claude Code / Cloud Agent: `templates/CLAUDE.bridge.md` を `CLAUDE.md` として配置し、`prompts/` を `.claude/commands/` に配置します。詳細は「[Claude Code / Cloud Agent での利用](#claude-code--cloud-agent-での利用)」を参照してください。
 
 既存の `AGENTS.md` やテンプレートがあるプロジェクトでは、上書きせず差分をレビューして統合してください。以後の更新も、同期用 Pull Request または各プロジェクト側の Pull Request で反映します。
 
@@ -32,18 +34,19 @@
 | `prompts/investigate-issue.md` | コードを変更せず調査するプロンプト |
 | `templates/AGENTS.project-template.md` | プロジェクト固有ルールを記入する `AGENTS.md` の雛形 |
 | `templates/AGENTS.common-rules.md` | 同期対象に埋め込む、マーカー付きの短い共通ルール |
+| `templates/CLAUDE.bridge.md` | `AGENTS.md` を取り込む Claude Code 用 `CLAUDE.md` の雛形 |
 | `templates/issue-form.yml` | 実装条件を明確にする Issue Form |
 | `templates/pull-request-template.md` | PR の変更・検証・リスクを記録する雛形 |
 | `templates/ci-summary-caller.yml` | CI ログを reusable workflow に渡す呼び出し雛形 |
-| `scripts/prepare-agent-context.py` | Issue / PR 情報を ChatGPT Work 用 Markdown に整形 |
+| `scripts/prepare-agent-context.py` | Issue / PR 情報をエージェント向け Markdown に整形 |
 | `scripts/summarize-ci.py` | 失敗ログから秘匿情報を伏せた短い Markdown サマリーを生成 |
 | `.github/workflows/reusable-ci-summary.yml` | 他リポジトリから呼び出せる CI サマリー workflow |
 | `.github/workflows/sync-agent-rules.yml` | 対象プロジェクトへ同期用 PR を作る手動 workflow |
 | `.github/sync-targets.json` | 同期の対象・対象ファイル・opt-in 状態を管理する設定 |
 
-## ChatGPT Work での利用
+## タスクプロンプトの使い分け
 
-用途に応じて、以下のプロンプトを選びます。対象 Issue / PR と関連ログを渡し、プロジェクト固有の `AGENTS.md` にある制約を優先させます。
+用途に応じて、以下のプロンプトを選びます。対象 Issue / PR と関連ログを渡し、プロジェクト固有の `AGENTS.md` にある制約を優先させます。プロンプト本文はエージェント非依存です。
 
 | 作業 | 使用するプロンプト | 期待する結果 |
 | --- | --- | --- |
@@ -51,6 +54,10 @@
 | CI を直す | `prompts/fix-ci.md` | 失敗原因、最小修正、再現・検証結果 |
 | PR をレビューする | `prompts/review-pr.md` | 品質・セキュリティ・互換性の指摘 |
 | 変更せずに調査する | `prompts/investigate-issue.md` | 原因、選択肢、推奨対応 |
+
+各プロンプトの冒頭には YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）があります。Claude Code ではスラッシュコマンドの定義として使われ、それ以外のエージェントでは無視される短いヘッダーです。
+
+### ChatGPT Work での利用
 
 Issue/PR の情報を `prepare-agent-context.py` で整形し、失敗ログを `summarize-ci.py` で要約してから渡すと、必要な制約と根拠を短く共有できます。
 
@@ -60,6 +67,63 @@ python scripts/summarize-ci.py --input failed-ci.log --workflow-name CI --run-ur
 ```
 
 生成した `agent-context.md`、対応するタスクプロンプト、対象プロジェクトの `AGENTS.md` を ChatGPT Work に添付し、「このコンテキストに従って実装・検証・報告して」と依頼します。どちらのスクリプトも標準ライブラリのみを使用します。詳細な入力形式とオプションは各スクリプトの `--help` を参照してください。
+
+### Claude Code / Cloud Agent での利用
+
+Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み込みません。そのため、`AGENTS.md` を取り込む `CLAUDE.md` を対象プロジェクトに配置します。以下は同期で配置できるファイルです。
+
+| 配置元 | 配置先 | 役割 |
+| --- | --- | --- |
+| `templates/CLAUDE.bridge.md` | `CLAUDE.md` | `@AGENTS.md` の取り込みと Claude Code 固有の運用 |
+| `prompts/coding-agent-typescript-python.md` | `.claude/rules/ai-platform-common.md` | 共通ルールの全文をセッション開始時に読み込む |
+| `prompts/implement-issue.md` | `.claude/commands/implement-issue.md` | `/implement-issue` |
+| `prompts/fix-ci.md` | `.claude/commands/fix-ci.md` | `/fix-ci` |
+| `prompts/review-pr.md` | `.claude/commands/review-pr.md` | `/review-pr` |
+| `prompts/investigate-issue.md` | `.claude/commands/investigate-issue.md` | `/investigate-issue` |
+
+`CLAUDE.md` の同期はファイル全体を置き換えます。プロジェクト固有の Claude Code 用記述を `CLAUDE.md` に追加した場合は、この項目を `enabled: false` に戻し、固有の記述は `AGENTS.md` 側で管理してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
+
+`.claude/rules/ai-platform-common.md` を配置すると共通ルールの全文が毎回読み込まれるため、`AGENTS.md` のマーカー区間は他のエージェント向けの要約として残せます。
+
+#### クラウドセッションでの前提
+
+Claude Code のクラウドセッションは、毎回新しい VM でリポジトリを clone して開始します。リポジトリにコミットされたもの（`CLAUDE.md`、`.claude/rules/`、`.claude/commands/`、`.claude/settings.json`、`.mcp.json`）だけが届き、各自のマシンにあるユーザー設定は届きません。共有したい設定はリポジトリにコミットしてください。
+
+検証コマンドを実行するには依存関係の導入が必要です。プロジェクト側でこれを自動化する場合は、`.claude/settings.json` に SessionStart hook を設定します。この設定はローカルとクラウドの両方で実行されるため、クラウドに限定するには `CLAUDE_CODE_REMOTE` を確認します。
+
+```json
+{
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          { "type": "command", "command": "bash \"$CLAUDE_PROJECT_DIR\"/scripts/install-deps.sh" }
+        ]
+      }
+    ]
+  }
+}
+```
+
+```bash
+#!/bin/bash
+# scripts/install-deps.sh
+[ "$CLAUDE_CODE_REMOTE" = "true" ] || exit 0
+npm ci
+pip install -r requirements.txt
+exit 0
+```
+
+`.claude/settings.json` はプロジェクトごとに内容が異なるため、同期対象にしていません。上記を各プロジェクトの設定に統合してください。
+
+#### 運用上の制約
+
+- クラウドセッションからの `git push` は、そのセッションの作業ブランチだけに制限されます。他リポジトリへ書き込む同期は、引き続き **Sync AI Platform templates** workflow で実行します。
+- `gh` CLI はクラウドセッションに導入されていません。Issue / PR / Actions の参照は組み込みの GitHub ツールを使用します。`prompts/fix-ci.md` の手順はそのまま適用できます。
+- ネットワークは既定で「Trusted」（主要なパッケージレジストリと GitHub のみ）です。社内レジストリなどが必要な場合は、環境設定で許可ドメインを追加します。
+- クラウド環境の環境変数は、その環境を使う全員が参照できます。専用の Secret ストアはないため、認証情報を設定しないでください。
+- `reusable-ci-summary.yml` が PR に投稿する要約は、そのままエージェントの入力になります。CI 失敗を PR 上で追跡する運用と組み合わせると、失敗ログを手動で渡す必要がなくなります。
 
 ## Reusable Workflow の呼び出し例
 
@@ -111,6 +175,7 @@ jobs:
 - 認証・認可、DB スキーマ、公開 API、デプロイ設定は根拠とプロジェクト固有レビューなしに変更しません。
 - reusable workflow は通常 `contents: read` のみです。PR コメントは same-repository PR の明示的 opt-in 時だけ、コメントジョブに限定して `pull-requests: write` を使います。
 - 同期用トークンは fine-grained PAT とし、対象リポジトリだけに Contents: Read/Write と Pull requests: Read/Write を与えます。外部 fork でこの同期 workflow は実行されません。
+- Claude Code のクラウド環境に設定した環境変数は、その環境を使う全員が参照できます。専用の Secret ストアはないため、API キーやトークンを設定しません。
 
 ## 今後の拡張候補
 

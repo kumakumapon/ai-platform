@@ -1,6 +1,12 @@
+---
+description: Issue を調査し、最小差分で実装・検証してから報告する
+argument-hint: [issue-url-or-number]
+disable-model-invocation: true
+---
+
 # Issue 実装プロンプト
 
-`prompts/coding-agent-typescript-python.md` とプロジェクト固有の `AGENTS.md` をあわせて適用する。
+共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。
 
 ## 入力情報
 

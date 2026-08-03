@@ -133,7 +133,7 @@ def render_context(
     )
     return "\n".join(
         (
-            "# ChatGPT Work Agent Context",
+            "# Coding Agent Context",
             "",
             "## Target Issue / PR",
             f"- {mask_secrets(target) or 'Not specified'}",
