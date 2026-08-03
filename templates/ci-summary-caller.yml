@@ -1,0 +1,35 @@
+name: AI Platform CI Summary
+
+on:
+  workflow_dispatch:
+    inputs:
+      log_file:
+        description: Path to a saved log (use `.ai-platform-failure-log/<file>` for an artifact)
+        required: true
+        type: string
+      workflow_name:
+        description: Failed workflow name
+        required: false
+        type: string
+      reproduce_command:
+        description: Optional local reproduction command
+        required: false
+        type: string
+      log_artifact_name:
+        description: Optional artifact name containing the failed CI log
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  summarize:
+    uses: sj55576/ai-platform/.github/workflows/reusable-ci-summary.yml@main
+    with:
+      log_file: ${{ inputs.log_file }}
+      log_artifact_name: ${{ inputs.log_artifact_name }}
+      workflow_name: ${{ inputs.workflow_name }}
+      run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+      reproduce_command: ${{ inputs.reproduce_command }}
+      comment_on_pr: false

@@ -1,0 +1,132 @@
+name: Reusable CI failure summary
+
+on:
+  workflow_call:
+    inputs:
+      log_file:
+        description: Path to a CI failure log (relative to the caller checkout or downloaded artifact)
+        required: true
+        type: string
+      log_artifact_name:
+        description: Optional artifact name containing the failure log from another job in this workflow run
+        required: false
+        type: string
+        default: ""
+      workflow_name:
+        description: Name of the failed workflow
+        required: false
+        type: string
+        default: "Unknown workflow"
+      run_url:
+        description: URL of the failed Actions run
+        required: false
+        type: string
+        default: ""
+      reproduce_command:
+        description: Optional local reproduction command
+        required: false
+        type: string
+        default: ""
+      comment_on_pr:
+        description: Add or update one marked summary comment on a same-repository PR
+        required: false
+        type: boolean
+        default: false
+    secrets:
+      platform_read_token:
+        description: Optional read-only token for checking out a private AI Platform repository
+        required: false
+
+jobs:
+  summarize:
+    name: Summarize CI failure
+    permissions:
+      contents: read
+    outputs:
+      comment_body: ${{ steps.collect.outputs.comment_body }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out caller repository
+        uses: actions/checkout@v4
+
+      - name: Download the caller's failure-log artifact
+        if: inputs.log_artifact_name != ''
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.log_artifact_name }}
+          path: .ai-platform-failure-log
+
+      - name: Check out AI Platform scripts
+        id: platform
+        if: github.event.pull_request == null || github.event.pull_request.head.repo.fork == false
+        uses: actions/checkout@v4
+        continue-on-error: true
+        with:
+          repository: sj55576/ai-platform
+          ref: main
+          path: .ai-platform
+          token: ${{ secrets.platform_read_token || github.token }}
+          persist-credentials: false
+
+      - name: Create a concise, redacted summary
+        if: steps.platform.outcome == 'success'
+        run: |
+          python .ai-platform/scripts/summarize-ci.py \
+            --input "${{ inputs.log_file }}" \
+            --output ci-summary.md \
+            --workflow-name "${{ inputs.workflow_name }}" \
+            --run-url "${{ inputs.run_url }}" \
+            --reproduce-command "${{ inputs.reproduce_command }}"
+          cat ci-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Report an unavailable AI Platform checkout
+        if: steps.platform.outcome != 'success'
+        run: |
+          {
+            echo "## CI failure summary unavailable"
+            echo
+            echo "AI Platform checkout was skipped or failed, so no CI summary was generated. External-fork PRs do not use any passed secret."
+          } | tee ci-summary.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Collect comment body
+        id: collect
+        run: |
+          delimiter="$(uuidgen)"
+          {
+            echo "comment_body<<${delimiter}"
+            echo "<!-- ai-platform-ci-summary -->"
+            cat ci-summary.md
+            echo "${delimiter}"
+          } >> "$GITHUB_OUTPUT"
+
+  comment:
+    name: Comment on pull request
+    needs: summarize
+    if: >-
+      inputs.comment_on_pr && github.event.pull_request.number != null &&
+      github.event.pull_request.head.repo.fork == false
+    permissions:
+      pull-requests: write
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create or update the marked summary comment
+        uses: actions/github-script@v7
+        env:
+          COMMENT_BODY: ${{ needs.summarize.outputs.comment_body }}
+        with:
+          script: |
+            const marker = '<!-- ai-platform-ci-summary -->';
+            const body = process.env.COMMENT_BODY;
+            const { owner, repo } = context.repo;
+            const issue_number = context.payload.pull_request.number;
+            const comments = await github.paginate(github.rest.issues.listComments, {
+              owner, repo, issue_number, per_page: 100,
+            });
+            const existing = comments.find((comment) =>
+              comment.user.type === 'Bot' && comment.body.includes(marker),
+            );
+            if (existing) {
+              await github.rest.issues.updateComment({ owner, repo, comment_id: existing.id, body });
+            } else {
+              await github.rest.issues.createComment({ owner, repo, issue_number, body });
+            }

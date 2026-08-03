@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "targets": [
+    {
+      "repository": "OWNER/PROJECT",
+      "enabled": false,
+      "agent_rules": {
+        "enabled": false,
+        "source": "templates/AGENTS.common-rules.md",
+        "destination": "AGENTS.md",
+        "start_marker": "<!-- AI-PLATFORM:START -->",
+        "end_marker": "<!-- AI-PLATFORM:END -->"
+      },
+      "files": [
+        {
+          "enabled": false,
+          "source": "templates/issue-form.yml",
+          "destination": ".github/ISSUE_TEMPLATE/ai-platform.yml"
+        },
+        {
+          "enabled": false,
+          "source": "templates/pull-request-template.md",
+          "destination": ".github/pull_request_template.md"
+        },
+        {
+          "enabled": false,
+          "source": "templates/ci-summary-caller.yml",
+          "destination": ".github/workflows/ai-platform-ci-summary.yml"
+        }
+      ]
+    }
+  ]
+}
