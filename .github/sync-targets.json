@@ -56,6 +56,11 @@
           "enabled": false,
           "source": "prompts/investigate-issue.md",
           "destination": ".claude/commands/investigate-issue.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/audit-repository.md",
+          "destination": ".claude/commands/audit-repository.md"
         }
       ]
     },
@@ -114,6 +119,11 @@
           "enabled": true,
           "source": "prompts/quick-request.md",
           "destination": ".claude/commands/quick-request.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/audit-repository.md",
+          "destination": ".claude/commands/audit-repository.md"
         }
       ]
     }

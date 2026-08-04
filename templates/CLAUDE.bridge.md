@@ -18,6 +18,7 @@ Claude Code が読み込むのは `CLAUDE.md` だけで、`AGENTS.md` は読み�
 | `/fix-ci` | CI 失敗の原因特定、最小修正、再検証 |
 | `/review-pr` | 品質・セキュリティ・互換性のレビュー（コードは変更しない） |
 | `/investigate-issue` | コードを変更しない原因調査と対応案の比較 |
+| `/audit-repository` | リポジトリの課題・改善点を診断し、必要に応じて重複のないGitHub Issueを作成 |
 
 ## 検証コマンドの実行
 
