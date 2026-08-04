@@ -58,6 +58,64 @@
           "destination": ".claude/commands/investigate-issue.md"
         }
       ]
+    },
+    {
+      "repository": "sj55576/MiniStr",
+      "enabled": true,
+      "agent_rules": {
+        "enabled": true,
+        "source": "templates/AGENTS.common-rules.md",
+        "destination": "AGENTS.md",
+        "start_marker": "<!-- AI-PLATFORM:START -->",
+        "end_marker": "<!-- AI-PLATFORM:END -->"
+      },
+      "files": [
+        {
+          "enabled": true,
+          "source": "templates/issue-form.yml",
+          "destination": ".github/ISSUE_TEMPLATE/ai-platform.yml"
+        },
+        {
+          "enabled": true,
+          "source": "templates/pull-request-template.md",
+          "destination": ".github/pull_request_template.md"
+        },
+        {
+          "enabled": true,
+          "source": "templates/CLAUDE.bridge.md",
+          "destination": "CLAUDE.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/coding-agent-typescript-python.md",
+          "destination": ".claude/rules/ai-platform-common.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/implement-issue.md",
+          "destination": ".claude/commands/implement-issue.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/fix-ci.md",
+          "destination": ".claude/commands/fix-ci.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/review-pr.md",
+          "destination": ".claude/commands/review-pr.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/investigate-issue.md",
+          "destination": ".claude/commands/investigate-issue.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/quick-request.md",
+          "destination": ".claude/commands/quick-request.md"
+        }
+      ]
     }
   ]
 }
