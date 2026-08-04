@@ -58,11 +58,11 @@ CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正
 ```md
 ## 結果
 - 対象: <repository / Issue / PR / Actions URL>
-- 対応: <実装・CI修正・レビュー・調査の要約>
+- 対応: <実装・CI修正・レビュー・調査・診断の要約>
 
 ## 変更
 - `<path>`: <理由>
-- 変更なし（レビュー・調査の場合）
+- 変更なし（レビュー・調査・診断の場合）
 
 ## 検証
 - `<command>`: 成功 / 失敗 / 未実施（理由）
