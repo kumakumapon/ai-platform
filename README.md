@@ -33,6 +33,7 @@
 | `prompts/review-pr.md` | 品質・セキュリティ・互換性の PR レビュープロンプト |
 | `prompts/investigate-issue.md` | コードを変更せず調査するプロンプト |
 | `prompts/audit-repository.md` | リポジトリの課題・改善点を根拠付きで診断し、必要に応じてIssue化するプロンプト |
+| `prompts/propose-features.md` | アプリの目的・実装・拡張性から、価値のある追加実装候補をIssue化するプロンプト |
 | `templates/AGENTS.project-template.md` | プロジェクト固有ルールを記入する `AGENTS.md` の雛形 |
 | `templates/AGENTS.common-rules.md` | 同期対象に埋め込む、マーカー付きの短い共通ルール |
 | `templates/CLAUDE.bridge.md` | `AGENTS.md` を取り込む Claude Code 用 `CLAUDE.md` の雛形 |
@@ -63,7 +64,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 ### 以後の依頼
 
-次の5形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
+次の6形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
 
 | 目的 | そのまま送る依頼 |
 | --- | --- |
@@ -72,6 +73,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 | PR をレビューする | `レビュー sj55576/MiniStr #42` |
 | Issue を調査するだけ | `調査 sj55576/MiniStr #97` |
 | リポジトリを診断し、改善Issueを作る | `診断 sj55576/MiniStr Issue作成` |
+| アプリの追加実装候補をIssue化する | `企画 sj55576/MiniStr Issue作成` |
 
 エージェントは、対象リポジトリ、Issue/PR、`AGENTS.md` / `CLAUDE.md`、関連コード、既存テストを
 確認してから作業します。実装を左右する重大な不明点だけを質問し、Issue/PR に書かれている内容を
@@ -92,6 +94,7 @@ Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 | PR をレビューする | `prompts/review-pr.md` | 品質・セキュリティ・互換性の指摘 |
 | 変更せずに調査する | `prompts/investigate-issue.md` | 原因、選択肢、推奨対応 |
 | リポジトリの改善点をIssue化する | `prompts/audit-repository.md` | 根拠・優先度・完了条件を備えた改善Issue |
+| アプリの追加実装候補をIssue化する | `prompts/propose-features.md` | ユーザー価値・実装状況・拡張性に基づく実装候補Issue |
 
 各プロンプトの冒頭には YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）があります。Claude Code ではスラッシュコマンドの定義として使われ、それ以外のエージェントでは無視される短いヘッダーです。
 
@@ -119,6 +122,7 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 | `prompts/review-pr.md` | `.claude/commands/review-pr.md` | `/review-pr` |
 | `prompts/investigate-issue.md` | `.claude/commands/investigate-issue.md` | `/investigate-issue` |
 | `prompts/audit-repository.md` | `.claude/commands/audit-repository.md` | `/audit-repository owner/repo Issue作成` |
+| `prompts/propose-features.md` | `.claude/commands/propose-features.md` | `/propose-features owner/repo Issue作成` |
 
 `CLAUDE.md` の同期はファイル全体を置き換えます。プロジェクト固有の Claude Code 用記述を `CLAUDE.md` に追加した場合は、この項目を `enabled: false` に戻し、固有の記述は `AGENTS.md` 側で管理してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
 
