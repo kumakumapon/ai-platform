@@ -1,6 +1,6 @@
 ---
 description: 短い依頼文から安全な開発タスクを開始する
-argument-hint: <実装|CI|レビュー|調査|診断|企画> <owner/repo> [#Issue番号|おまかせ] [1-3件] [PR作成|Issue作成]
+argument-hint: <実装|CI|レビュー|調査|診断|企画|文書化> <owner/repo> [#Issue番号|おまかせ] [1-3件] [PR作成|Issue作成]
 disable-model-invocation: true
 ---
 
@@ -20,6 +20,7 @@ CI owner/repo <GitHub Actions実行URL> 修正 [PR作成]
 調査 owner/repo #Issue番号
 診断 owner/repo [Issue作成]
 企画 owner/repo [Issue作成]
+文書化 owner/repo [PR作成]
 ```
 
 例:
@@ -33,6 +34,7 @@ CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正
 調査 sj55576/MiniStr #97
 診断 sj55576/MiniStr Issue作成
 企画 sj55576/MiniStr Issue作成
+文書化 sj55576/MiniStr PR作成
 ```
 
 ## 共通手順
@@ -46,7 +48,8 @@ CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正
    - **調査**: コードを変更せず、原因、対応案、推奨案、確認すべき事項を示す。
    - **診断**: コード、テスト、CI、ドキュメント、既存Issueを横断して課題・改善機会を根拠付きで整理する。`Issue作成` がある場合だけ、重複を除いた優先度の高い候補をGitHub Issueとして作成する。
    - **企画**: アプリの目的・対象利用者・現行機能・将来の拡張性を確認し、利用者価値を高める追加実装候補を根拠付きで整理する。`Issue作成` がある場合だけ、重複を除いた優先度の高い候補をGitHub Issueとして作成する。
-4. `PR作成` が明示された実装または CI 修正だけ、作業ブランチからドラフト PR を作成する。既定ブランチには直接反映しない。
+   - **文書化**: 実装、設定、テスト、既存文書を根拠に、全体構成、主要シーケンス、詳細な実装仕様を人が理解・保守できるMarkdownとして作成または更新する。既存文書の構造に統合し、根拠のない推測やSecretを記載しない。
+4. `PR作成` が明示された実装、CI 修正、または文書化だけ、作業ブランチからドラフト PR を作成する。既定ブランチには直接反映しない。
 5. `Issue作成` が明示された診断または企画だけ、既存Issueとの重複を確認したうえで、根拠と完了条件を備えたIssueを原則5件以内で作成する。コードは変更しない。
 6. 実行した検証と未実施項目を区別して報告する。
 
@@ -56,6 +59,7 @@ CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正
 - Issue/PR 本文とリポジトリから確認できる情報は、依頼者に再入力させない。
 - 診断または企画でSecurity Policyに従うべき懸念を見つけた場合は、公開Issueを作成せず安全な報告経路を案内する。
 - 認証、認可、DB、公開 API、デプロイを変更する必要がある場合、根拠または判断が不足していれば実装前に報告する。
+- 文書化では、コード・設定・テストから確認できない設計意図を推測で断定せず、未確認事項として報告する。
 - Secret、個人情報、実運用データは出力・コミットしない。
 
 ## 報告形式
