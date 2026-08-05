@@ -64,24 +64,28 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 ### 以後の依頼
 
-次の6形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
+次の8形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
 
 | 目的 | そのまま送る依頼 |
 | --- | --- |
-| Issue を実装して PR を作る | `実装 sj55576/MiniStr #96 PR作成` |
+| 指定した Issue を実装して PR を作る | `実装 sj55576/MiniStr #96 PR作成` |
+| 実装候補を1件おまかせで選び、PRを作る | `実装 sj55576/MiniStr PR作成` |
+| 関連する実装候補を最大3件おまかせで選び、PRを作る | `実装 sj55576/MiniStr おまかせ 3件 PR作成` |
 | CI を直して PR を作る | `CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正 PR作成` |
 | PR をレビューする | `レビュー sj55576/MiniStr #42` |
 | Issue を調査するだけ | `調査 sj55576/MiniStr #97` |
 | リポジトリを診断し、改善Issueを作る | `診断 sj55576/MiniStr Issue作成` |
 | アプリの追加実装候補をIssue化する | `企画 sj55576/MiniStr Issue作成` |
 
+実装で Issue 番号を省略すると、おまかせ選定になります。件数を省略した場合は1件、`2件` または `3件` を指定した場合は最大その件数を選びます。選定では未対応のOpen Issue、既存PR、依存関係、変更範囲、完了条件、リスクを照合し、同じPRで安全に扱える候補だけを組み合わせます。候補が足りない、または無関係・大規模・判断待ちでまとめられない場合は、件数を満たすために寄せ集めず、実装した件数と見送り理由を報告します。
+
 エージェントは、対象リポジトリ、Issue/PR、`AGENTS.md` / `CLAUDE.md`、関連コード、既存テストを
 確認してから作業します。実装を左右する重大な不明点だけを質問し、Issue/PR に書かれている内容を
 再入力させません。認証・認可・DB・公開 API・デプロイの変更など、根拠が必要な判断は確認してから進めます。
 
 Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
-`.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo #番号 PR作成`
-のように利用できます。
+`.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo PR作成` や
+`/quick-request 実装 owner/repo おまかせ 3件 PR作成` のように利用できます。
 
 ## タスクプロンプトの使い分け
 
