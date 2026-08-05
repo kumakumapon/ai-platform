@@ -66,6 +66,11 @@
           "enabled": false,
           "source": "prompts/propose-features.md",
           "destination": ".claude/commands/propose-features.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/document-repository.md",
+          "destination": ".claude/commands/document-repository.md"
         }
       ]
     },
@@ -134,6 +139,11 @@
           "enabled": true,
           "source": "prompts/propose-features.md",
           "destination": ".claude/commands/propose-features.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/document-repository.md",
+          "destination": ".claude/commands/document-repository.md"
         }
       ]
     }
