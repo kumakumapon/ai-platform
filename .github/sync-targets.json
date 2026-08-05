@@ -61,6 +61,11 @@
           "enabled": false,
           "source": "prompts/audit-repository.md",
           "destination": ".claude/commands/audit-repository.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/propose-features.md",
+          "destination": ".claude/commands/propose-features.md"
         }
       ]
     },
@@ -124,6 +129,11 @@
           "enabled": true,
           "source": "prompts/audit-repository.md",
           "destination": ".claude/commands/audit-repository.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/propose-features.md",
+          "destination": ".claude/commands/propose-features.md"
         }
       ]
     }
