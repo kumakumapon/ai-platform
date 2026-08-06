@@ -9,7 +9,7 @@
 | `ai-platform` | 安全・品質の共通ルール、Issue/PR/CI 用のプロンプト、GitHub テンプレート、再利用可能な Workflow |
 | 各プロジェクト | 使用技術、アーキテクチャ、検証コマンド、変更禁止領域、DB/API・デプロイ固有の制約 |
 
-このリポジトリはアプリケーション本体や各プロジェクトの業務仕様を持ちません。共通ルールを参照・同期しつつ、実装判断は必ず対象プロジェクトのコード、テスト、`AGENTS.md`、Issue/PR を根拠に行います。
+このリポジトリはアプリケーション本体や各プロジェクトの業務仕様を持ちません。共通ルールを参照しつつ、実装判断は必ず対象プロジェクトのコード、テスト、`AGENTS.md`、Issue/PR を根拠に行います。
 
 ## 使い方（最短手順）
 
@@ -21,7 +21,7 @@
    - ChatGPT Work: 対象タスクに対応する `prompts/` のファイル、プロジェクトの `AGENTS.md`、Issue/PR、関連する CI ログを一緒に渡します。
    - Claude Code / Cloud Agent: `templates/CLAUDE.bridge.md` を `CLAUDE.md` として配置し、`prompts/` を `.claude/commands/` に配置します。詳細は「[Claude Code / Cloud Agent での利用](#claude-code--cloud-agent-での利用)」を参照してください。
 
-既存の `AGENTS.md` やテンプレートがあるプロジェクトでは、上書きせず差分をレビューして統合してください。以後の更新も、同期用 Pull Request または各プロジェクト側の Pull Request で反映します。
+既存の `AGENTS.md` やテンプレートがあるプロジェクトでは、上書きせず差分をレビューして統合してください。以後の更新も、各プロジェクト側の Pull Request で反映します。
 
 ## 構成
 
@@ -35,14 +35,13 @@
 | `prompts/audit-repository.md` | リポジトリの課題・改善点を根拠付きで診断し、必要に応じてIssue化するプロンプト |
 | `prompts/propose-features.md` | アプリの目的・実装・拡張性から、価値のある追加実装候補をIssue化するプロンプト |
 | `prompts/document-repository.md` | 構成・シーケンス・詳細仕様を人が保守できる技術ドキュメントにまとめるプロンプト |
-| `prompts/sync-ai-platform.md` | AI Platform設定をプロジェクト固有のルールを保護して同期するプロンプト |
 | `prompts/prepare-release.md` | リリースを公開せず、変更履歴・検証・公開準備を整えるプロンプト |
 | `prompts/update-dependencies.md` | 互換性・ライセンス・セキュリティを確認して依存関係を更新するプロンプト |
 | `prompts/improve-tests.md` | 重要な未カバーフローに回帰テストを追加するプロンプト |
 | `prompts/refactor-repository.md` | 振る舞いを変えずに保守性を改善するプロンプト |
 | `prompts/security-review.md` | 公開情報を増やさずにセキュリティを調査するプロンプト |
 | `templates/AGENTS.project-template.md` | プロジェクト固有ルールを記入する `AGENTS.md` の雛形 |
-| `templates/AGENTS.common-rules.md` | 同期対象に埋め込む、マーカー付きの短い共通ルール |
+| `templates/AGENTS.common-rules.md` | プロジェクトへ手動で適用する範囲を示す、マーカー付きの短い共通ルール |
 | `templates/CLAUDE.bridge.md` | `AGENTS.md` を取り込む Claude Code 用 `CLAUDE.md` の雛形 |
 | `templates/issue-form.yml` | 実装条件を明確にする Issue Form |
 | `templates/pull-request-template.md` | PR の変更・検証・リスクを記録する雛形 |
@@ -50,8 +49,6 @@
 | `scripts/prepare-agent-context.py` | Issue / PR 情報をエージェント向け Markdown に整形 |
 | `scripts/summarize-ci.py` | 失敗ログから秘匿情報を伏せた短い Markdown サマリーを生成 |
 | `.github/workflows/reusable-ci-summary.yml` | 他リポジトリから呼び出せる CI サマリー workflow |
-| `.github/workflows/sync-agent-rules.yml` | 対象プロジェクトへ同期用 PR を作る手動 workflow |
-| `.github/sync-targets.json` | 同期の対象・対象ファイル・opt-in 状態を管理する設定 |
 
 ## クイック依頼（ChatGPT Work）
 
@@ -71,7 +68,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 ### 以後の依頼
 
-次の15形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
+次の14形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
 
 | 目的 | そのまま送る依頼 |
 | --- | --- |
@@ -84,7 +81,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 | リポジトリを診断し、改善Issueを作る | `診断 sj55576/MiniStr Issue作成` |
 | アプリの追加実装候補をIssue化する | `企画 sj55576/MiniStr Issue作成` |
 | 実装を読み解き、網羅ドキュメントとPRを作る | `文書化 sj55576/MiniStr PR作成` |
-| AI Platform設定を同期する | `同期 sj55576/MiniStr PR作成` |
+| AI Platform設定の更新を比較してPRにする | `同期 sj55576/MiniStr PR作成` |
 | 公開前のリリース準備をする | `リリース sj55576/MiniStr PR作成` |
 | セキュリティ更新を優先して依存関係を更新する | `依存更新 sj55576/MiniStr セキュリティ PR作成` |
 | 重要な未カバーフローのテストを追加する | `テスト sj55576/MiniStr PR作成` |
@@ -114,7 +111,7 @@ Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 | リポジトリの改善点をIssue化する | `prompts/audit-repository.md` | 根拠・優先度・完了条件を備えた改善Issue |
 | アプリの追加実装候補をIssue化する | `prompts/propose-features.md` | ユーザー価値・実装状況・拡張性に基づく実装候補Issue |
 | リポジトリを網羅的に文書化する | `prompts/document-repository.md` | 構成・処理フロー・実装仕様を根拠付きで説明するドキュメント |
-| AI Platform 設定を同期する | `prompts/sync-ai-platform.md` | 固有設定を保護した同期差分とPR |
+| AI Platform 設定を更新する | `prompts/sync-ai-platform.md` | 固有設定を保護した更新差分とPR |
 | リリース準備をする | `prompts/prepare-release.md` | 変更履歴・公開前検証・リリースノート |
 | 依存関係を更新する | `prompts/update-dependencies.md` | 最小の互換・セキュリティ更新 |
 | 重要フローのテストを強化する | `prompts/improve-tests.md` | 決定的な回帰テスト |
@@ -136,7 +133,7 @@ python scripts/summarize-ci.py --input failed-ci.log --workflow-name CI --run-ur
 
 ### Claude Code / Cloud Agent での利用
 
-Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み込みません。そのため、`AGENTS.md` を取り込む `CLAUDE.md` を対象プロジェクトに配置します。以下は同期で配置できるファイルです。
+Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み込みません。そのため、`AGENTS.md` を取り込む `CLAUDE.md` を対象プロジェクトに配置します。以下は各プロジェクトへ必要に応じて配置できるファイルです。
 
 | 配置元 | 配置先 | 役割 |
 | --- | --- | --- |
@@ -156,7 +153,7 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 | `prompts/refactor-repository.md` | `.claude/commands/refactor-repository.md` | `/refactor-repository owner/repo おまかせ PR作成` |
 | `prompts/security-review.md` | `.claude/commands/security-review.md` | `/security-review owner/repo 調査` |
 
-`CLAUDE.md` の同期はファイル全体を置き換えます。プロジェクト固有の Claude Code 用記述を `CLAUDE.md` に追加した場合は、この項目を `enabled: false` に戻し、固有の記述は `AGENTS.md` 側で管理してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
+このテンプレートで `CLAUDE.md` を置き換える場合はファイル全体が対象になります。プロジェクト固有の Claude Code 用記述がある場合は、内容を比較して `AGENTS.md` 側へ移すか、対象リポジトリで手動統合してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
 
 `.claude/rules/ai-platform-common.md` を配置すると共通ルールの全文が毎回読み込まれるため、`AGENTS.md` のマーカー区間は他のエージェント向けの要約として残せます。
 
@@ -194,7 +191,7 @@ exit 0
 
 #### 運用上の制約
 
-- クラウドセッションからの `git push` は、そのセッションの作業ブランチだけに制限されます。他リポジトリへ書き込む同期は、引き続き **Sync AI Platform templates** workflow で実行します。
+- クラウドセッションからの `git push` は、そのセッションの作業ブランチだけに制限されます。テンプレートの更新は、対象リポジトリで差分を確認してPRとして作成します。
 - `gh` CLI はクラウドセッションに導入されていません。Issue / PR / Actions の参照は組み込みの GitHub ツールを使用します。`prompts/fix-ci.md` の手順はそのまま適用できます。
 - ネットワークは既定で「Trusted」（主要なパッケージレジストリと GitHub のみ）です。社内レジストリなどが必要な場合は、環境設定で許可ドメインを追加します。
 - クラウド環境の環境変数は、その環境を使う全員が参照できます。専用の Secret ストアはないため、認証情報を設定しないでください。
@@ -236,20 +233,15 @@ jobs:
 
 `reusable-ci-summary.yml` は呼び出し側のリポジトリを読み取り専用で checkout し、AI Platform の `summarize-ci.py` を別途 checkout して Job Summary を生成します。AI Platform は public のため、通常は追加トークンを渡す必要がありません。外部 fork の PR では platform checkout、コメントジョブ、渡された Secret のいずれも実行・参照しません。コメントには識別マーカーを付け、既存コメントを更新するため重複投稿を避けます。
 
-## 更新と同期の運用
+## 更新の運用
 
-同期は `.github/sync-targets.json` の `enabled: true` にした対象だけに、手動の **Sync AI Platform templates** workflow から実行します。初期設定の例は無効であり、意図せず他リポジトリを変更しません。`dry_run: true` で差分を確認してから `false` に切り替えてください。
-
-同期は対象リポジトリの既定ブランチを直接変更しません。`chore/sync-ai-platform-rules` ブランチに変更を作り、同じ同期 PR を更新します。対象リポジトリを限定した fine-grained PAT を `SYNC_REPOSITORIES_TOKEN` として設定する必要があります。AGENTS 共通部分の同期は `<!-- AI-PLATFORM:START -->` / `<!-- AI-PLATFORM:END -->` の両マーカーがある場合だけ実行されるため、プロジェクト固有部分を上書きしません。
-
-テンプレートや共通ルールを更新したら、このリポジトリでレビュー済み PR をマージし、各プロジェクトでは dry run と同期 PR のレビューを実施します。個別プロジェクトの固有ルールに変更が必要なら、まずそのプロジェクトで変更し、共通化できるかを別途検討してください。
+テンプレートや共通ルールを更新したら、このリポジトリでレビュー済み PR をマージし、対象プロジェクトでは `同期 owner/repo PR作成` で差分を確認して個別の更新PRを作成します。`AGENTS.md` は `<!-- AI-PLATFORM:START -->` / `<!-- AI-PLATFORM:END -->` の範囲だけを候補にし、固有部分を上書きしません。個別プロジェクトの固有ルールに変更が必要なら、まずそのプロジェクトで変更し、共通化できるかを別途検討してください。
 
 ## セキュリティ上の注意
 
 - Secret、アクセストークン、個人情報、ログに含まれる認証情報をプロンプト・Issue・PR・Job Summary に掲載しません。`summarize-ci.py` は Secret らしい値をマスクしますが、入力ログの公開範囲も確認してください。
 - 認証・認可、DB スキーマ、公開 API、デプロイ設定は根拠とプロジェクト固有レビューなしに変更しません。
 - reusable workflow は通常 `contents: read` のみです。PR コメントは same-repository PR の明示的 opt-in 時だけ、コメントジョブに限定して `pull-requests: write` を使います。
-- 同期用トークンは fine-grained PAT とし、対象リポジトリだけに Contents: Read/Write と Pull requests: Read/Write を与えます。外部 fork でこの同期 workflow は実行されません。
 - Claude Code のクラウド環境に設定した環境変数は、その環境を使う全員が参照できます。専用の Secret ストアはないため、API キーやトークンを設定しません。
 
 ## 今後の拡張候補
