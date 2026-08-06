@@ -71,6 +71,36 @@
           "enabled": false,
           "source": "prompts/document-repository.md",
           "destination": ".claude/commands/document-repository.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/sync-ai-platform.md",
+          "destination": ".claude/commands/sync-ai-platform.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/prepare-release.md",
+          "destination": ".claude/commands/prepare-release.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/update-dependencies.md",
+          "destination": ".claude/commands/update-dependencies.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/improve-tests.md",
+          "destination": ".claude/commands/improve-tests.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/refactor-repository.md",
+          "destination": ".claude/commands/refactor-repository.md"
+        },
+        {
+          "enabled": false,
+          "source": "prompts/security-review.md",
+          "destination": ".claude/commands/security-review.md"
         }
       ]
     },
@@ -144,6 +174,36 @@
           "enabled": true,
           "source": "prompts/document-repository.md",
           "destination": ".claude/commands/document-repository.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/sync-ai-platform.md",
+          "destination": ".claude/commands/sync-ai-platform.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/prepare-release.md",
+          "destination": ".claude/commands/prepare-release.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/update-dependencies.md",
+          "destination": ".claude/commands/update-dependencies.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/improve-tests.md",
+          "destination": ".claude/commands/improve-tests.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/refactor-repository.md",
+          "destination": ".claude/commands/refactor-repository.md"
+        },
+        {
+          "enabled": true,
+          "source": "prompts/security-review.md",
+          "destination": ".claude/commands/security-review.md"
         }
       ]
     }
