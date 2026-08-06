@@ -35,6 +35,12 @@
 | `prompts/audit-repository.md` | リポジトリの課題・改善点を根拠付きで診断し、必要に応じてIssue化するプロンプト |
 | `prompts/propose-features.md` | アプリの目的・実装・拡張性から、価値のある追加実装候補をIssue化するプロンプト |
 | `prompts/document-repository.md` | 構成・シーケンス・詳細仕様を人が保守できる技術ドキュメントにまとめるプロンプト |
+| `prompts/sync-ai-platform.md` | AI Platform設定をプロジェクト固有のルールを保護して同期するプロンプト |
+| `prompts/prepare-release.md` | リリースを公開せず、変更履歴・検証・公開準備を整えるプロンプト |
+| `prompts/update-dependencies.md` | 互換性・ライセンス・セキュリティを確認して依存関係を更新するプロンプト |
+| `prompts/improve-tests.md` | 重要な未カバーフローに回帰テストを追加するプロンプト |
+| `prompts/refactor-repository.md` | 振る舞いを変えずに保守性を改善するプロンプト |
+| `prompts/security-review.md` | 公開情報を増やさずにセキュリティを調査するプロンプト |
 | `templates/AGENTS.project-template.md` | プロジェクト固有ルールを記入する `AGENTS.md` の雛形 |
 | `templates/AGENTS.common-rules.md` | 同期対象に埋め込む、マーカー付きの短い共通ルール |
 | `templates/CLAUDE.bridge.md` | `AGENTS.md` を取り込む Claude Code 用 `CLAUDE.md` の雛形 |
@@ -65,7 +71,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 ### 以後の依頼
 
-次の9形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
+次の15形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
 
 | 目的 | そのまま送る依頼 |
 | --- | --- |
@@ -78,6 +84,12 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 | リポジトリを診断し、改善Issueを作る | `診断 sj55576/MiniStr Issue作成` |
 | アプリの追加実装候補をIssue化する | `企画 sj55576/MiniStr Issue作成` |
 | 実装を読み解き、網羅ドキュメントとPRを作る | `文書化 sj55576/MiniStr PR作成` |
+| AI Platform設定を同期する | `同期 sj55576/MiniStr PR作成` |
+| 公開前のリリース準備をする | `リリース sj55576/MiniStr PR作成` |
+| セキュリティ更新を優先して依存関係を更新する | `依存更新 sj55576/MiniStr セキュリティ PR作成` |
+| 重要な未カバーフローのテストを追加する | `テスト sj55576/MiniStr PR作成` |
+| 振る舞いを変えずに安全なリファクタをする | `リファクタ sj55576/MiniStr おまかせ PR作成` |
+| 公開せずにセキュリティを調査する | `セキュリティ sj55576/MiniStr 調査` |
 
 実装で Issue 番号を省略すると、おまかせ選定になります。件数を省略した場合は1件、`2件` または `3件` を指定した場合は最大その件数を選びます。選定では未対応のOpen Issue、既存PR、依存関係、変更範囲、完了条件、リスクを照合し、同じPRで安全に扱える候補だけを組み合わせます。候補が足りない、または無関係・大規模・判断待ちでまとめられない場合は、件数を満たすために寄せ集めず、実装した件数と見送り理由を報告します。
 
@@ -87,7 +99,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 `.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo PR作成` や
-`/quick-request 実装 owner/repo おまかせ 3件 PR作成`、`/quick-request 文書化 owner/repo PR作成` のように利用できます。
+`/quick-request 実装 owner/repo おまかせ 3件 PR作成`、`/quick-request 文書化 owner/repo PR作成`、`/quick-request セキュリティ owner/repo 調査` のように利用できます。
 
 ## タスクプロンプトの使い分け
 
@@ -102,6 +114,12 @@ Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 | リポジトリの改善点をIssue化する | `prompts/audit-repository.md` | 根拠・優先度・完了条件を備えた改善Issue |
 | アプリの追加実装候補をIssue化する | `prompts/propose-features.md` | ユーザー価値・実装状況・拡張性に基づく実装候補Issue |
 | リポジトリを網羅的に文書化する | `prompts/document-repository.md` | 構成・処理フロー・実装仕様を根拠付きで説明するドキュメント |
+| AI Platform 設定を同期する | `prompts/sync-ai-platform.md` | 固有設定を保護した同期差分とPR |
+| リリース準備をする | `prompts/prepare-release.md` | 変更履歴・公開前検証・リリースノート |
+| 依存関係を更新する | `prompts/update-dependencies.md` | 最小の互換・セキュリティ更新 |
+| 重要フローのテストを強化する | `prompts/improve-tests.md` | 決定的な回帰テスト |
+| 振る舞いを変えずリファクタする | `prompts/refactor-repository.md` | 限定的な保守性改善 |
+| セキュリティを調査する | `prompts/security-review.md` | 非公開前提の読み取り専用調査 |
 
 各プロンプトの冒頭には YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）があります。Claude Code ではスラッシュコマンドの定義として使われ、それ以外のエージェントでは無視される短いヘッダーです。
 
@@ -131,6 +149,12 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 | `prompts/audit-repository.md` | `.claude/commands/audit-repository.md` | `/audit-repository owner/repo Issue作成` |
 | `prompts/propose-features.md` | `.claude/commands/propose-features.md` | `/propose-features owner/repo Issue作成` |
 | `prompts/document-repository.md` | `.claude/commands/document-repository.md` | `/document-repository owner/repo PR作成` |
+| `prompts/sync-ai-platform.md` | `.claude/commands/sync-ai-platform.md` | `/sync-ai-platform owner/repo PR作成` |
+| `prompts/prepare-release.md` | `.claude/commands/prepare-release.md` | `/prepare-release owner/repo PR作成` |
+| `prompts/update-dependencies.md` | `.claude/commands/update-dependencies.md` | `/update-dependencies owner/repo セキュリティ PR作成` |
+| `prompts/improve-tests.md` | `.claude/commands/improve-tests.md` | `/improve-tests owner/repo PR作成` |
+| `prompts/refactor-repository.md` | `.claude/commands/refactor-repository.md` | `/refactor-repository owner/repo おまかせ PR作成` |
+| `prompts/security-review.md` | `.claude/commands/security-review.md` | `/security-review owner/repo 調査` |
 
 `CLAUDE.md` の同期はファイル全体を置き換えます。プロジェクト固有の Claude Code 用記述を `CLAUDE.md` に追加した場合は、この項目を `enabled: false` に戻し、固有の記述は `AGENTS.md` 側で管理してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
 
