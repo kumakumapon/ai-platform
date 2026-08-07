@@ -96,7 +96,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 `.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo PR作成` や
-`/quick-request 実装 owner/repo おまかせ 3件 PR作成`、`/quick-request 文書化 owner/repo PR作成`、`/quick-request セキュリティ owner/repo 調査` のように利用できます。
+`/quick-request 実装 owner/repo おまかせ 3件 PR作成`、`/quick-request 文書化 owner/repo PR作成`、`/quick-request セキュリティ owner/repo 調査`、`/quick-request 同期 owner/repo PR作成` のように利用できます。単体コマンドとしても `.claude/commands/sync-ai-platform.md` に配置すれば `/sync-ai-platform owner/repo PR作成` で同じ更新を実行できます。
 
 ## タスクプロンプトの使い分け
 
