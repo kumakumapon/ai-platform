@@ -7,6 +7,7 @@
 - `prompts/`、`templates/`、`agents/` は、複数のプロジェクトで手動適用できる共通資産です。特定プロジェクトの事情に依存する記述を追加しません。
 - `prompts/` のタスクプロンプトは、対象プロジェクトの `.claude/commands/` へ配置できます。YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）を壊さないでください。
 - `agents/` のサブエージェント定義は、対象プロジェクトの `.claude/agents/` へ配置できます。`name` フロントマターを変更すると `templates/CLAUDE.bridge.md` のオーケストレーション手順との対応が壊れるため、変更する場合は両方を同時に更新してください。
+- 実装系プロンプト（`implement-issue.md` 等）が要求するレビューゲート（Critical/High 解消までPR作成しない）は、ツール中立な自己レビューとしてプロンプト本文に実装してください。`agents/` のサブエージェント委任は、そのゲートを独立したコンテキストで実行する Claude Code 向けの追加手段であり、代替ではありません。両者の基準がずれないようにしてください。
 - `templates/AGENTS.common-rules.md` の `<!-- AI-PLATFORM:START -->` / `<!-- AI-PLATFORM:END -->` マーカーは、対象プロジェクトへ手動適用する範囲を示します。マーカーを削除しないでください。
 - 特定のエージェント製品に依存する表現は、`README.md` の製品別セクションに閉じ込めます。プロンプト本文はツール中立に保ちます。
 

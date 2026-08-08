@@ -163,9 +163,11 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 
 `.claude/rules/ai-platform-common.md` を配置すると共通ルールの全文が毎回読み込まれるため、`AGENTS.md` のマーカー区間は他のエージェント向けの要約として残せます。
 
-#### サブエージェントによるオーケストレーション（Claude Code 限定）
+#### 調査・実装・レビューの段階分け（全ツール共通）とサブエージェントへの委任（Claude Code 限定）
 
-`agents/` を `.claude/agents/` に配置すると、実装系コマンドを「調査 → 実装 → レビュー」の3段階に分けて実行できます。`templates/CLAUDE.bridge.md` に、この委任手順が Claude Code 固有の指示として含まれています。
+`prompts/implement-issue.md`、`fix-ci.md`、`improve-tests.md`、`refactor-repository.md`、`update-dependencies.md`、および `quick-request.md` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` は、コード変更の前に調査、変更後に `review-pr.md` と同じ観点のレビューを行い、Critical/High 相当の指摘が解消するまで完了・PR作成をしないという段階分けを、プロンプト本文（ツール中立）に含んでいます。これは単一のエージェントが会話の中で自己レビューとして実行するもので、**ChatGPT Work を含むどのツールでも機能します**。コードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはこの段階分けを適用しません（後者はすでに単独で完結する設計です）。
+
+Claude Code では、この3段階を独立したコンテキストのサブエージェントへ委任することで、権限分離とレビューの客観性を高められます。`agents/` を `.claude/agents/` に配置すると、次のサブエージェントが使えます。
 
 | 段階 | サブエージェント | 権限 |
 | --- | --- | --- |
@@ -173,9 +175,7 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 | 2. 実装 | `ai-platform-implementer` | 通常の編集権限を継承 |
 | 3. レビュー | `ai-platform-reviewer` | 読み取りとテスト実行のみ。PR作成前の必須ゲート |
 
-対象は `/implement-issue`、`/fix-ci`、`/improve-tests`、`/refactor-repository`、`/update-dependencies`、および `/quick-request` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` です。`ai-platform-reviewer` が Critical または High の指摘をした場合、対応して再レビューするまで PR は作成されません。コードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはこのオーケストレーションを適用しません。
-
-サブエージェントは会話履歴を共有しないため、各段階への委任時には目的・完了条件・変更範囲などを明示的に渡す必要があります。1タスクあたりの実行回数が増えるため、レイテンシとコストは単一エージェントでの実行より増えます。ChatGPT Work にはサブエージェントに相当する機構がないため、この節は Claude Code / Cloud Agent 限定です。
+サブエージェントは会話履歴を共有しないため、各段階への委任時には目的・完了条件・変更範囲などを明示的に渡す必要があります。1タスクあたりの実行回数が増えるため、レイテンシとコストは単一エージェントでの実行より増えます。`.claude/agents/` を配置していない場合は、プロンプト本文の指示どおり同じ会話の中で自己レビューとして実行され、ゲート自体は変わりません。
 
 #### クラウドセッションでの前提
 

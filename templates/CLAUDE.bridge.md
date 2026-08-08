@@ -21,21 +21,21 @@ Claude Code が読み込むのは `CLAUDE.md` だけで、`AGENTS.md` は読み�
 | `/audit-repository` | リポジトリの課題・改善点を診断し、必要に応じて重複のないGitHub Issueを作成 |
 | `/propose-features` | アプリの目的・実装・拡張性を確認し、追加実装候補を必要に応じてGitHub Issueとして作成 |
 
-## サブエージェントによるオーケストレーション
+## 調査・実装・レビューの段階分けとサブエージェントへの委任
 
-`agents/` を `.claude/agents/` に配置した場合、`ai-platform-planner` / `ai-platform-implementer` / `ai-platform-reviewer` の3サブエージェントが使えます。次のコマンドを実行するときは、常にこの順で委任します。
+`/implement-issue`、`/fix-ci`、`/improve-tests`、`/refactor-repository`、`/update-dependencies`、および `/quick-request` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` は、コードを変更する前に調査を、変更した後に `review-pr.md` と同じ観点のレビューを行い、Critical/High 相当の指摘が解消するまで完了・PR作成をしないという段階分けを、プロンプト本文（ツール中立）に既に含んでいます。ChatGPT Work を含むどのツールでも、この段階分けと必須ゲートは自己レビューとして機能します。
 
-対象: `/implement-issue`、`/fix-ci`、`/improve-tests`、`/refactor-repository`、`/update-dependencies`、および `/quick-request` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新`。
-
-コードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` や、`Issue作成` を伴わない診断・企画には適用しません。
+`agents/` を `.claude/agents/` に配置している場合、Claude Code ではこの3段階を独立したコンテキストの `ai-platform-planner`（調査）/ `ai-platform-implementer`（実装）/ `ai-platform-reviewer`（レビュー）サブエージェントに委任してください。同じ会話の中で自分がすべての段階をこなすより、権限分離（planner と reviewer は Write/Edit を持たない）と独立したコンテキストによる客観性が得られます。委任する場合の手順は次のとおりです。
 
 1. `ai-platform-planner` に、対象の Issue/PR/CI失敗ログと完了条件を渡して調査を委任し、変更範囲・実装方針・リスクを整理させる。
 2. 調査結果に基づいて実装する（`ai-platform-implementer` に委任するか、自身で実装する）。
 3. 実装後、差分とテスト結果を `ai-platform-reviewer` に渡してレビューを委任する。
-4. **レビューで Critical または High の指摘がある場合、PR を作成せず、指摘に対応してから再度レビューする。** これは省略できない必須ゲート。Medium 以下の指摘は、対応するか対応しない理由を報告に残す。
+4. レビューで Critical または High の指摘がある場合、PR を作成せず、指摘に対応してから再度レビューする。Medium 以下の指摘は、対応するか対応しない理由を報告に残す。
 5. レビューで Critical/High の指摘がなくなってから PR を作成する。
 
-<!-- サブエージェントへの委任は Claude Code 固有の機能です。この節は AGENTS.md 側には反映しません。 -->
+`.claude/agents/` を配置していない、またはコードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはサブエージェントへの委任もこの段階分けの拡張も不要です（後者はプロンプト本文の指示どおり単独で完結します）。
+
+<!-- サブエージェントへの委任は Claude Code 固有の強化です。この節は AGENTS.md 側には反映しません。ベースとなるレビューゲートは prompts/ 本文にあるため、この節を適用しなくても機能します。 -->
 
 ## 検証コマンドの実行
 
