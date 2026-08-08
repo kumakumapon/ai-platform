@@ -43,6 +43,9 @@
 | `templates/AGENTS.project-template.md` | プロジェクト固有ルールを記入する `AGENTS.md` の雛形 |
 | `templates/AGENTS.common-rules.md` | プロジェクトへ手動で適用する範囲を示す、マーカー付きの短い共通ルール |
 | `templates/CLAUDE.bridge.md` | `AGENTS.md` を取り込む Claude Code 用 `CLAUDE.md` の雛形 |
+| `agents/planner.md` | 実装前の調査・計画整理を担当するサブエージェント（Claude Code 用） |
+| `agents/implementer.md` | 計画に基づき最小差分を実装するサブエージェント（Claude Code 用） |
+| `agents/reviewer.md` | 実装差分をレビューし、PR作成前の必須ゲートとなるサブエージェント（Claude Code 用） |
 | `templates/issue-form.yml` | 実装条件を明確にする Issue Form |
 | `templates/pull-request-template.md` | PR の変更・検証・リスクを記録する雛形 |
 | `templates/ci-summary-caller.yml` | CI ログを reusable workflow に渡す呼び出し雛形 |
@@ -152,10 +155,27 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 | `prompts/improve-tests.md` | `.claude/commands/improve-tests.md` | `/improve-tests owner/repo PR作成` |
 | `prompts/refactor-repository.md` | `.claude/commands/refactor-repository.md` | `/refactor-repository owner/repo おまかせ PR作成` |
 | `prompts/security-review.md` | `.claude/commands/security-review.md` | `/security-review owner/repo 調査` |
+| `agents/planner.md` | `.claude/agents/planner.md` | サブエージェント `ai-platform-planner`（調査担当、コード変更なし） |
+| `agents/implementer.md` | `.claude/agents/implementer.md` | サブエージェント `ai-platform-implementer`（実装担当） |
+| `agents/reviewer.md` | `.claude/agents/reviewer.md` | サブエージェント `ai-platform-reviewer`（レビュー担当、コード変更なし） |
 
 このテンプレートで `CLAUDE.md` を置き換える場合はファイル全体が対象になります。プロジェクト固有の Claude Code 用記述がある場合は、内容を比較して `AGENTS.md` 側へ移すか、対象リポジトリで手動統合してください。Claude Code 固有の記述が不要なら、`CLAUDE.md` を `AGENTS.md` へのシンボリックリンクにする方法もあります（Windows では管理者権限または開発者モードが必要です）。
 
 `.claude/rules/ai-platform-common.md` を配置すると共通ルールの全文が毎回読み込まれるため、`AGENTS.md` のマーカー区間は他のエージェント向けの要約として残せます。
+
+#### サブエージェントによるオーケストレーション（Claude Code 限定）
+
+`agents/` を `.claude/agents/` に配置すると、実装系コマンドを「調査 → 実装 → レビュー」の3段階に分けて実行できます。`templates/CLAUDE.bridge.md` に、この委任手順が Claude Code 固有の指示として含まれています。
+
+| 段階 | サブエージェント | 権限 |
+| --- | --- | --- |
+| 1. 調査 | `ai-platform-planner` | 読み取りとテスト実行のみ。コード・設定・Issue・PR は変更しない |
+| 2. 実装 | `ai-platform-implementer` | 通常の編集権限を継承 |
+| 3. レビュー | `ai-platform-reviewer` | 読み取りとテスト実行のみ。PR作成前の必須ゲート |
+
+対象は `/implement-issue`、`/fix-ci`、`/improve-tests`、`/refactor-repository`、`/update-dependencies`、および `/quick-request` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` です。`ai-platform-reviewer` が Critical または High の指摘をした場合、対応して再レビューするまで PR は作成されません。コードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはこのオーケストレーションを適用しません。
+
+サブエージェントは会話履歴を共有しないため、各段階への委任時には目的・完了条件・変更範囲などを明示的に渡す必要があります。1タスクあたりの実行回数が増えるため、レイテンシとコストは単一エージェントでの実行より増えます。ChatGPT Work にはサブエージェントに相当する機構がないため、この節は Claude Code / Cloud Agent 限定です。
 
 #### クラウドセッションでの前提
 
