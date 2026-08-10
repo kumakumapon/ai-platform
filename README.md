@@ -71,25 +71,25 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 ### 以後の依頼
 
-次の15形式を使います。 `PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
+次の15形式を使います。`OWNER/REPOSITORY` は作業対象のリポジトリ名に置き換えます。`PR作成` を付けた場合だけ、作業ブランチからドラフト PR まで作成します。診断は `Issue作成` を付けた場合だけ、既存Issueを照合したうえで改善Issueを作成します。
 
 | 目的 | そのまま送る依頼 |
 | --- | --- |
-| 指定した Issue を実装して PR を作る | `実装 sj55576/MiniStr #96 PR作成` |
-| 実装候補を1件おまかせで選び、PRを作る | `実装 sj55576/MiniStr PR作成` |
-| 関連する実装候補を最大3件おまかせで選び、PRを作る | `実装 sj55576/MiniStr おまかせ 3件 PR作成` |
-| CI を直して PR を作る | `CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正 PR作成` |
-| PR をレビューする | `レビュー sj55576/MiniStr #42` |
-| Issue を調査するだけ | `調査 sj55576/MiniStr #97` |
-| リポジトリを診断し、改善Issueを作る | `診断 sj55576/MiniStr Issue作成` |
-| アプリの追加実装候補をIssue化する | `企画 sj55576/MiniStr Issue作成` |
-| 実装を読み解き、網羅ドキュメントとPRを作る | `文書化 sj55576/MiniStr PR作成` |
-| AI Platform設定の更新を比較してPRにする | `同期 sj55576/MiniStr PR作成` |
-| 公開前のリリース準備をする | `リリース sj55576/MiniStr PR作成` |
-| セキュリティ更新を優先して依存関係を更新する | `依存更新 sj55576/MiniStr セキュリティ PR作成` |
-| 重要な未カバーフローのテストを追加する | `テスト sj55576/MiniStr PR作成` |
-| 振る舞いを変えずに安全なリファクタをする | `リファクタ sj55576/MiniStr おまかせ PR作成` |
-| 公開せずにセキュリティを調査する | `セキュリティ sj55576/MiniStr 調査` |
+| 指定した Issue を実装して PR を作る | `実装 OWNER/REPOSITORY #123 PR作成` |
+| 実装候補を1件おまかせで選び、PRを作る | `実装 OWNER/REPOSITORY PR作成` |
+| 関連する実装候補を最大3件おまかせで選び、PRを作る | `実装 OWNER/REPOSITORY おまかせ 3件 PR作成` |
+| CI を直して PR を作る | `CI OWNER/REPOSITORY https://github.com/OWNER/REPOSITORY/actions/runs/RUN_ID 修正 PR作成` |
+| PR をレビューする | `レビュー OWNER/REPOSITORY #42` |
+| Issue を調査するだけ | `調査 OWNER/REPOSITORY #97` |
+| リポジトリを診断し、改善Issueを作る | `診断 OWNER/REPOSITORY Issue作成` |
+| アプリの追加実装候補をIssue化する | `企画 OWNER/REPOSITORY Issue作成` |
+| 実装を読み解き、網羅ドキュメントとPRを作る | `文書化 OWNER/REPOSITORY PR作成` |
+| AI Platform設定の更新を比較してPRにする | `同期 OWNER/REPOSITORY PR作成` |
+| 公開前のリリース準備をする | `リリース OWNER/REPOSITORY PR作成` |
+| セキュリティ更新を優先して依存関係を更新する | `依存更新 OWNER/REPOSITORY セキュリティ PR作成` |
+| 重要な未カバーフローのテストを追加する | `テスト OWNER/REPOSITORY PR作成` |
+| 振る舞いを変えずに安全なリファクタをする | `リファクタ OWNER/REPOSITORY おまかせ PR作成` |
+| 公開せずにセキュリティを調査する | `セキュリティ OWNER/REPOSITORY 調査` |
 
 実装で Issue 番号を省略すると、おまかせ選定になります。件数を省略した場合は1件、`2件` または `3件` を指定した場合は最大その件数を選びます。選定では未対応のOpen Issue、既存PR、依存関係、変更範囲、完了条件、リスクを照合し、同じPRで安全に扱える候補だけを組み合わせます。候補が足りない、または無関係・大規模・判断待ちでまとめられない場合は、件数を満たすために寄せ集めず、実装した件数と見送り理由を報告します。
 
@@ -277,5 +277,5 @@ jobs:
 - 言語・フレームワーク別の検証コマンドセット
 - CodeQL / 依存関係更新 / SBOM の共通テンプレート
 - Issue・PR・CI 情報を GitHub API から取得するコンテキスト生成アダプタ
-- 同期 PR の状態を集約するダッシュボード
+- 複数リポジトリへのテンプレート適用状況を確認するチェックリスト
 - ルール・テンプレートのバージョン固定と互換性ポリシー
