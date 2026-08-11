@@ -165,14 +165,16 @@ Claude Code が読み込むのは `CLAUDE.md` であり、`AGENTS.md` は読み�
 
 #### 調査・計画レビュー・実装・差分レビューの段階分け（全ツール共通）とサブエージェントへの委任（Claude Code 限定）
 
-`prompts/implement-issue.md`、`fix-ci.md`、`improve-tests.md`、`refactor-repository.md`、`update-dependencies.md`、および `quick-request.md` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` は、次の4段階をプロンプト本文（ツール中立）に含んでいます。単一のエージェントが1つの会話の中で自己レビューとして実行するもので、**ChatGPT Work を含むどのツールでも機能します**。
+PR を作成しうるプロンプト（`implement-issue.md`、`fix-ci.md`、`document-repository.md`、`sync-ai-platform.md`、`prepare-release.md`、`update-dependencies.md`、`improve-tests.md`、`refactor-repository.md`、および `quick-request.md` の `実装` / `CI` / `文書化` / `同期` / `リリース` / `依存更新` / `テスト` / `リファクタ`）は、次の4段階をプロンプト本文（ツール中立）に含んでいます。単一のエージェントが1つの会話の中で自己レビューとして実行するもので、**ChatGPT Work を含むどのツールでも機能します**。
 
 1. 調査（目的・完了条件・変更範囲・実装方針・リスクを整理する）
 2. 計画レビュー（要求との整合性・見落とし・実現性を確認する必須ゲート。Critical/High 相当の懸念があれば着手前に解消する）
 3. 実装
 4. 差分レビュー（`review-pr.md` と同じ観点で確認する必須ゲート。Critical/High 相当の指摘があれば完了・PR作成前に解消する）
 
-コードを変更しない `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはこの段階分けを適用しません（すでに単独で完結する設計です）。
+判断基準は「PR を作成するなら必ず2つのゲートを通す」です。コードを変更しない `文書化` と `同期` も対象に含めています。特に `同期` は対象リポジトリの `AGENTS.md` / `CLAUDE.md` / `.claude/` を書き換える、つまりエージェントの挙動設定そのものを変更するため、誤適用の影響はコード変更より大きくなり得ます。
+
+PR も Issue も作らず読み取りだけで完結する `/review-pr`、`/investigate-issue`、`/audit-repository`、`/propose-features`、`/security-review` にはこの段階分けを適用しません（すでに単独で完結する設計です）。
 
 Claude Code では、この4段階を独立したコンテキストのサブエージェントへ委任することで、権限分離とレビューの客観性を高められます。`agents/` を `.claude/agents/` に配置すると、次のサブエージェントが使えます。
 
