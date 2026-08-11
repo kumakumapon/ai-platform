@@ -31,12 +31,14 @@ Claude Code が読み込むのは `CLAUDE.md` だけで、`AGENTS.md` は読み�
 
 ## 調査・計画レビュー・実装・差分レビューの段階分けとサブエージェントへの委任
 
-`/implement-issue`、`/fix-ci`、`/improve-tests`、`/refactor-repository`、`/update-dependencies`、および `/quick-request` の `実装` / `CI` / `テスト` / `リファクタ` / `依存更新` は、次の4段階を、プロンプト本文（ツール中立）に既に含んでいます。ChatGPT Work を含むどのツールでも、この段階分けと2つの必須ゲートは自己レビューとして機能します。
+PR を作成しうるコマンド（`/implement-issue`、`/fix-ci`、`/document-repository`、`/sync-ai-platform`、`/prepare-release`、`/update-dependencies`、`/improve-tests`、`/refactor-repository`、および `/quick-request` の `実装` / `CI` / `文書化` / `同期` / `リリース` / `依存更新` / `テスト` / `リファクタ`）は、次の4段階を、プロンプト本文（ツール中立）に既に含んでいます。ChatGPT Work を含むどのツールでも、この段階分けと2つの必須ゲートは自己レビューとして機能します。
 
 1. 調査（目的・完了条件・変更範囲・実装方針・リスクを整理する）
 2. **計画レビュー**（要求との整合性・見落とし・実現性を確認する。Critical/High 相当の懸念があれば着手前に解消する必須ゲート）
 3. 実装
 4. **差分レビュー**（`review-pr.md` と同じ観点で確認する。Critical/High 相当の指摘があれば完了・PR作成前に解消する必須ゲート）
+
+判断基準は「PR を作成するなら必ず2つのゲートを通す」です。コードを変更しない `/sync-ai-platform` や `/document-repository` も対象に含まれます。特に `/sync-ai-platform` は対象プロジェクトの `AGENTS.md` / `CLAUDE.md` / `.claude/` を書き換えるため、誤適用の影響はコード変更より大きくなり得ます。
 
 `agents/` を `.claude/agents/` に配置している場合、Claude Code ではこの4段階を独立したコンテキストの `ai-platform-planner`（調査）/ `ai-platform-reviewer`（計画レビュー・差分レビューの両方）/ `ai-platform-implementer`（実装）サブエージェントに委任してください。同じ会話の中で自分がすべての段階をこなすより、権限分離（planner と reviewer は Write/Edit を持たない）と独立したコンテキストによる客観性が得られます。委任する場合の手順は次のとおりです。
 

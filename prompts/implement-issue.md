@@ -1,12 +1,26 @@
 ---
 description: Issue を調査し、最小差分で実装・検証してから報告する
-argument-hint: [issue-url-or-number]
+argument-hint: <owner/repo> [#Issue番号|おまかせ] [1-3件] [PR作成]
 disable-model-invocation: true
 ---
 
 # Issue 実装プロンプト
 
 共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。
+
+## 依頼形式
+
+```text
+実装 owner/repo [#Issue番号|おまかせ] [<1-3>件] [PR作成]
+```
+
+例:
+
+```text
+実装 OWNER/REPOSITORY #123 PR作成
+実装 OWNER/REPOSITORY PR作成
+実装 OWNER/REPOSITORY おまかせ 3件 PR作成
+```
 
 ## 入力情報
 
@@ -18,7 +32,7 @@ disable-model-invocation: true
 
 入力が不足している場合は、リポジトリと Issue を調査し、実装を左右する不明点だけを確認する。
 
-## 作業手順
+## 手順
 
 1. Issue、プロジェクトの `AGENTS.md`、関連コード、設定、既存テストを読んで、現状と完了条件を整理する。
 2. 変更対象、互換性・セキュリティ上の影響、追加または更新するテストを決める。影響が大きい不明点は実装前に報告する。
@@ -29,7 +43,7 @@ disable-model-invocation: true
 7. 差分を `prompts/review-pr.md` と同じ観点（正しさ・境界条件・例外処理・型安全性・入力検証・認証認可・Secret・互換性・性能・運用・テスト十分性）でレビューする。Critical または High 相当の指摘がある場合は対応し、指摘がなくなるまで手順4〜7を繰り返してから完了とする。
 8. 指示がある場合は、レビュー結果を含む内容が分かる PR を作成する。
 
-## 完了条件
+## 完了基準
 
 - Issue の明示された完了条件を満たす。
 - 変更が最小限で、関連する自動テストまたは代替検証がある。

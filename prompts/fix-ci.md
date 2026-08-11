@@ -1,12 +1,24 @@
 ---
 description: CI の失敗原因を特定し、最小差分で修正して再検証する
-argument-hint: [run-url-or-pr]
+argument-hint: <owner/repo> <Actions実行URL> [PR作成]
 disable-model-invocation: true
 ---
 
 # CI 失敗修正プロンプト
 
 共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。
+
+## 依頼形式
+
+```text
+CI owner/repo <GitHub Actions実行URL> 修正 [PR作成]
+```
+
+例:
+
+```text
+CI OWNER/REPOSITORY https://github.com/OWNER/REPOSITORY/actions/runs/RUN_ID 修正 PR作成
+```
 
 ## 入力情報
 
@@ -15,7 +27,7 @@ disable-model-invocation: true
 - 直近の変更、再現コマンド、対象環境（分かる範囲で）
 - 変更可能・変更禁止の範囲
 
-## 作業手順
+## 手順
 
 1. Actions の実行情報とログから、最初に意味のある失敗箇所、失敗した Job/Step、関連ファイルを特定する。ログに含まれる Secret らしい値は表示・報告時にマスクする。
 2. ワークフロー定義、依存関係、直近の差分、同等のローカル検証を調査し、根本原因と副次的エラーを区別する。
@@ -25,7 +37,7 @@ disable-model-invocation: true
 6. 失敗した検証を優先して再実行し、関連する lint、型チェック、テスト、ビルドも実行する。
 7. 差分を `prompts/review-pr.md` と同じ観点に加え、CI 設定の権限、Secret の参照、fork PR の安全性、キャッシュの妥当性でレビューする。Critical または High 相当の指摘がある場合は対応し、指摘がなくなるまで手順5〜7を繰り返してから完了とする。
 
-## 完了条件
+## 完了基準
 
 - 失敗原因、修正内容、根拠が説明できる。
 - 修正は失敗を隠すのではなく原因を解消している。

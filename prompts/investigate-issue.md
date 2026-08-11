@@ -1,12 +1,24 @@
 ---
 description: コードを変更せずに原因を調査し、対応案を比較して提示する
-argument-hint: [issue-url-or-number]
+argument-hint: <owner/repo> <#Issue番号>
 disable-model-invocation: true
 ---
 
 # Issue 調査プロンプト（コード変更なし）
 
 共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。このタスクでは、明示的な指示がない限りコード、設定、Issue、PR を変更しない。
+
+## 依頼形式
+
+```text
+調査 owner/repo #Issue番号
+```
+
+例:
+
+```text
+調査 OWNER/REPOSITORY #97
+```
 
 ## 入力情報
 
@@ -15,7 +27,7 @@ disable-model-invocation: true
 - 再現情報、エラー、関連 PR・CI URL（あれば）
 - 変更禁止領域、利用可能な環境・検証コマンド
 
-## 作業手順
+## 手順
 
 1. Issue、プロジェクトの `AGENTS.md`、関連実装、設定、テスト、履歴・CI 情報を調査する。
 2. 現象、再現条件、期待動作、実際の動作を整理し、必要に応じて非破壊の検証で確認する。
@@ -23,7 +35,7 @@ disable-model-invocation: true
 4. 対応案を最小差分案から提示し、各案の変更箇所、利点、リスク、検証方法、互換性への影響を比較する。
 5. 実装に進むために必要な判断・不足情報を明示する。
 
-## 完了条件
+## 完了基準
 
 - 原因または原因候補が、参照したコード・ログ・検証結果とともに説明されている。
 - 実装を伴わない、実行可能な対応案と検証計画が提示されている。
