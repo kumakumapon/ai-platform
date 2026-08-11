@@ -61,4 +61,7 @@ disable-model-invocation: true
 
 ## 残課題
 - なし / <内容>
+
+## PR
+- <URL または未作成理由>
 ```

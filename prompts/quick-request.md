@@ -32,21 +32,21 @@ CI owner/repo <GitHub Actions実行URL> 修正 [PR作成]
 例:
 
 ```text
-実装 sj55576/MiniStr #96 PR作成
-実装 sj55576/MiniStr PR作成
-実装 sj55576/MiniStr おまかせ 3件 PR作成
-CI sj55576/MiniStr https://github.com/sj55576/MiniStr/actions/runs/123456 修正 PR作成
-レビュー sj55576/MiniStr #42
-調査 sj55576/MiniStr #97
-診断 sj55576/MiniStr Issue作成
-企画 sj55576/MiniStr Issue作成
-文書化 sj55576/MiniStr PR作成
-同期 sj55576/MiniStr PR作成
-リリース sj55576/MiniStr PR作成
-依存更新 sj55576/MiniStr セキュリティ PR作成
-テスト sj55576/MiniStr PR作成
-リファクタ sj55576/MiniStr おまかせ PR作成
-セキュリティ sj55576/MiniStr 調査
+実装 OWNER/REPOSITORY #123 PR作成
+実装 OWNER/REPOSITORY PR作成
+実装 OWNER/REPOSITORY おまかせ 3件 PR作成
+CI OWNER/REPOSITORY https://github.com/OWNER/REPOSITORY/actions/runs/RUN_ID 修正 PR作成
+レビュー OWNER/REPOSITORY #42
+調査 OWNER/REPOSITORY #97
+診断 OWNER/REPOSITORY Issue作成
+企画 OWNER/REPOSITORY Issue作成
+文書化 OWNER/REPOSITORY PR作成
+同期 OWNER/REPOSITORY PR作成
+リリース OWNER/REPOSITORY PR作成
+依存更新 OWNER/REPOSITORY セキュリティ PR作成
+テスト OWNER/REPOSITORY PR作成
+リファクタ OWNER/REPOSITORY おまかせ PR作成
+セキュリティ OWNER/REPOSITORY 調査
 ```
 
 ## 共通手順

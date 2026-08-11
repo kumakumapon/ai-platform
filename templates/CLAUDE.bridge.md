@@ -10,16 +10,24 @@ Claude Code が読み込むのは `CLAUDE.md` だけで、`AGENTS.md` は読み�
 
 ## タスク別コマンド
 
-`.claude/commands/` に必要なコマンドを配置した場合、次のコマンドを使用できます。引数には対象の URL または番号を渡します。
+`.claude/commands/` に必要なコマンドを配置した場合、次のコマンドを使用できます。引数は各コマンドの `argument-hint` に従い、対象の `owner/repo`、Issue / PR の URL または番号、`PR作成` / `Issue作成` などの指定を渡します。
 
 | コマンド | 用途 |
 | --- | --- |
+| `/quick-request` | 短い依頼文から作業種別を判別し、対応する安全な開発タスクを開始する共通入口 |
 | `/implement-issue` | Issue の調査、最小差分の実装、検証、報告 |
 | `/fix-ci` | CI 失敗の原因特定、最小修正、再検証 |
 | `/review-pr` | 品質・セキュリティ・互換性のレビュー（コードは変更しない） |
 | `/investigate-issue` | コードを変更しない原因調査と対応案の比較 |
 | `/audit-repository` | リポジトリの課題・改善点を診断し、必要に応じて重複のないGitHub Issueを作成 |
 | `/propose-features` | アプリの目的・実装・拡張性を確認し、追加実装候補を必要に応じてGitHub Issueとして作成 |
+| `/document-repository` | 構成・処理フロー・実装仕様を人が保守できるドキュメントに整理 |
+| `/prepare-release` | リリース前の変更履歴・検証・公開準備を整理（公開・タグ作成・デプロイは行わない） |
+| `/sync-ai-platform` | AI Platform の共通ルール・エージェント設定を比較し、必要な範囲だけ手動更新 |
+| `/update-dependencies` | 互換性とセキュリティを確認して依存関係を最小更新 |
+| `/improve-tests` | 重要な未カバーフローに決定的な回帰テストを追加 |
+| `/refactor-repository` | 振る舞いを変えずに限定的な保守性改善を実施 |
+| `/security-review` | 公開情報を増やさず読み取り専用でセキュリティを調査 |
 
 ## 調査・計画レビュー・実装・差分レビューの段階分けとサブエージェントへの委任
 
