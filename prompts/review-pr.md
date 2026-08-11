@@ -1,12 +1,24 @@
 ---
 description: PR を品質・セキュリティ・互換性の観点でレビューする（コードは変更しない）
-argument-hint: [pr-url-or-number]
+argument-hint: <owner/repo> <#PR番号>
 disable-model-invocation: true
 ---
 
 # PR レビュープロンプト
 
 共通ルール（AI Platform の `prompts/coding-agent-typescript-python.md`、または対象プロジェクトに同期された共通ルール）と、プロジェクト固有の `AGENTS.md` / `CLAUDE.md` をあわせて適用する。レビューではコード変更を行わず、明示的に依頼された場合だけ別途修正を行う。
+
+## 依頼形式
+
+```text
+レビュー owner/repo #PR番号
+```
+
+例:
+
+```text
+レビュー OWNER/REPOSITORY #42
+```
 
 ## 入力情報
 
@@ -16,7 +28,7 @@ disable-model-invocation: true
 - CI 実行 URL とテスト結果（あれば）
 - 特に確認したい観点（あれば）
 
-## 作業手順
+## 手順
 
 1. PR 本文、関連 Issue、変更差分、変更前後の関連コード、テスト、CI 結果を確認する。
 2. 要求・既存設計・公開契約と差分を照合する。
@@ -25,7 +37,7 @@ disable-model-invocation: true
 5. 互換性、性能、運用、ロールバック容易性を評価する。
 6. 指摘は重要度順に、再現条件・根拠・推奨修正を添えて報告する。問題がなければ、確認した範囲と残るリスクを明記する。
 
-## 完了条件
+## 完了基準
 
 - 品質、セキュリティ、互換性を含むレビュー結果が根拠付きで整理されている。
 - 指摘ごとにファイル・箇所、影響、推奨対応が分かる。

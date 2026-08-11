@@ -5,7 +5,9 @@
 ## 変更時の原則
 
 - `prompts/`、`templates/`、`agents/` は、複数のプロジェクトで手動適用できる共通資産です。特定プロジェクトの事情に依存する記述を追加しません。
-- `prompts/` のタスクプロンプトは、対象プロジェクトの `.claude/commands/` へ配置できます。YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）を壊さないでください。
+- `prompts/` のタスクプロンプトは、対象プロジェクトの `.claude/commands/` へ配置できます。YAML フロントマター（`description`、`argument-hint`、`disable-model-invocation`）を壊さないでください。`argument-hint` は `<owner/repo>` で始めます。
+- タスクプロンプトは次の構成に統一します。`依頼形式` → （任意で `入力情報`）→ `手順` → `完了基準` → （任意でプロンプト固有の節）→ `禁止事項` → `報告形式`。`報告形式` は散文ではなく ```md フェンス内の Markdown テンプレートにします。出力が構造化されていないと、複数プロジェクト・複数ツール間で結果を比較できなくなります。`quick-request.md`（複合入口）と `coding-agent-typescript-python.md`（ルール文書）はこの構成の対象外です。
+- プロンプトを追加・変更したら `tests/test_prompt_structure.py` を実行します。構成、フロントマター、特定プロジェクト名の混入、`templates/CLAUDE.bridge.md` のコマンド表との対応を検証します。プロンプトを1件追加したら、同テンプレートのコマンド表にも1行追加してください。
 - `agents/` のサブエージェント定義は、対象プロジェクトの `.claude/agents/` へ配置できます。`name` フロントマターを変更すると `templates/CLAUDE.bridge.md` のオーケストレーション手順との対応が壊れるため、変更する場合は両方を同時に更新してください。
 - 実装系プロンプト（`implement-issue.md` 等）が要求する2つのレビューゲート（計画レビュー: Critical/High 解消まで着手しない、差分レビュー: Critical/High 解消までPR作成しない）は、ツール中立な自己レビューとしてプロンプト本文に実装してください。`agents/` のサブエージェント委任は、そのゲートを独立したコンテキストで実行する Claude Code 向けの追加手段であり、代替ではありません。両者の基準がずれないようにしてください。
 - `templates/AGENTS.common-rules.md` の `<!-- AI-PLATFORM:START -->` / `<!-- AI-PLATFORM:END -->` マーカーは、対象プロジェクトへ手動適用する範囲を示します。マーカーを削除しないでください。
