@@ -26,8 +26,9 @@ REQUIRED_FRONTMATTER_KEYS = ("description", "argument-hint", "disable-model-invo
 RETIRED_SECTIONS = ("作業手順", "完了条件", "診断手順", "確認手順", "調査手順", "報告基準", "報告")
 
 # templates/ legitimately points at this platform repository; nothing else may
-# name a specific project.
-ALLOWED_OWNER_REFERENCE = "sj55576/ai-platform"
+# name a specific project. Keep the owner in one place so a rename is one edit.
+PLATFORM_OWNER = "kumakumapon"
+ALLOWED_OWNER_REFERENCE = f"{PLATFORM_OWNER}/ai-platform"
 
 
 def split_frontmatter(text: str) -> tuple[dict[str, str], str]:
@@ -144,7 +145,7 @@ class SharedAssetTests(unittest.TestCase):
             with self.subTest(asset=path.relative_to(REPO_ROOT).as_posix()):
                 for match in pattern.finditer(path.read_text(encoding="utf-8")):
                     slug = match.group(0)
-                    if not slug.startswith("sj55576/"):
+                    if not slug.startswith(f"{PLATFORM_OWNER}/"):
                         continue
                     self.assertEqual(
                         slug,
