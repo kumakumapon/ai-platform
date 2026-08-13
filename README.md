@@ -251,7 +251,7 @@ jobs:
     permissions:
       contents: read
       pull-requests: write # comment_on_pr: true の場合だけ
-    uses: sj55576/ai-platform/.github/workflows/reusable-ci-summary.yml@main
+    uses: kumakumapon/ai-platform/.github/workflows/reusable-ci-summary.yml@main
     with:
       log_file: .ai-platform-failure-log/failed-ci.log
       log_artifact_name: failed-ci-log
