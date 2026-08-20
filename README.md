@@ -77,7 +77,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 | --- | --- |
 | 指定した Issue を実装して PR を作る | `実装 OWNER/REPOSITORY #123 PR作成` |
 | 実装候補を1件おまかせで選び、PRを作る | `実装 OWNER/REPOSITORY PR作成` |
-| 関連する実装候補を最大3件おまかせで選び、PRを作る | `実装 OWNER/REPOSITORY おまかせ 3件 PR作成` |
+| 関連する実装候補を最大5件おまかせで選び、PRを作る | `実装 OWNER/REPOSITORY おまかせ 5件 PR作成` |
 | CI を直して PR を作る | `CI OWNER/REPOSITORY https://github.com/OWNER/REPOSITORY/actions/runs/RUN_ID 修正 PR作成` |
 | PR をレビューする | `レビュー OWNER/REPOSITORY #42` |
 | Issue を調査するだけ | `調査 OWNER/REPOSITORY #97` |
@@ -91,7 +91,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 | 振る舞いを変えずに安全なリファクタをする | `リファクタ OWNER/REPOSITORY おまかせ PR作成` |
 | 公開せずにセキュリティを調査する | `セキュリティ OWNER/REPOSITORY 調査` |
 
-実装で Issue 番号を省略すると、おまかせ選定になります。件数を省略した場合は1件、`2件` または `3件` を指定した場合は最大その件数を選びます。選定では未対応のOpen Issue、既存PR、依存関係、変更範囲、完了条件、リスクを照合し、同じPRで安全に扱える候補だけを組み合わせます。候補が足りない、または無関係・大規模・判断待ちでまとめられない場合は、件数を満たすために寄せ集めず、実装した件数と見送り理由を報告します。
+実装で Issue 番号を省略すると、おまかせ選定になります。件数を省略した場合は1件、`2件` から `5件` を指定した場合は最大その件数を選びます。選定では未対応のOpen Issue、既存PR、依存関係、変更範囲、完了条件、リスクを照合し、同じPRで安全に扱える候補だけを組み合わせます。候補が足りない、または無関係・大規模・判断待ちでまとめられない場合は、件数を満たすために寄せ集めず、実装した件数と見送り理由を報告します。
 
 エージェントは、対象リポジトリ、Issue/PR、`AGENTS.md` / `CLAUDE.md`、関連コード、既存テストを
 確認してから作業します。実装を左右する重大な不明点だけを質問し、Issue/PR に書かれている内容を
@@ -99,7 +99,7 @@ Project instructions と Sources はプロジェクト内の全チャットで�
 
 Claude Code / Cloud Agent では、同じ `prompts/quick-request.md` を
 `.claude/commands/quick-request.md` に置くと、`/quick-request 実装 owner/repo PR作成` や
-`/quick-request 実装 owner/repo おまかせ 3件 PR作成`、`/quick-request 文書化 owner/repo PR作成`、`/quick-request セキュリティ owner/repo 調査`、`/quick-request 同期 owner/repo PR作成` のように利用できます。単体コマンドとしても `.claude/commands/sync-ai-platform.md` に配置すれば `/sync-ai-platform owner/repo PR作成` で同じ更新を実行できます。
+`/quick-request 実装 owner/repo おまかせ 5件 PR作成`、`/quick-request 文書化 owner/repo PR作成`、`/quick-request セキュリティ owner/repo 調査`、`/quick-request 同期 owner/repo PR作成` のように利用できます。単体コマンドとしても `.claude/commands/sync-ai-platform.md` に配置すれば `/sync-ai-platform owner/repo PR作成` で同じ更新を実行できます。
 
 ## タスクプロンプトの使い分け
 

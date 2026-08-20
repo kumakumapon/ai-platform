@@ -1,6 +1,6 @@
 ---
 description: Issue を調査し、最小差分で実装・検証してから報告する
-argument-hint: <owner/repo> [#Issue番号|おまかせ] [1-3件] [PR作成]
+argument-hint: <owner/repo> [#Issue番号|おまかせ] [1-5件] [PR作成]
 disable-model-invocation: true
 ---
 
@@ -11,7 +11,7 @@ disable-model-invocation: true
 ## 依頼形式
 
 ```text
-実装 owner/repo [#Issue番号|おまかせ] [<1-3>件] [PR作成]
+実装 owner/repo [#Issue番号|おまかせ] [<1-5>件] [PR作成]
 ```
 
 例:
@@ -19,7 +19,7 @@ disable-model-invocation: true
 ```text
 実装 OWNER/REPOSITORY #123 PR作成
 実装 OWNER/REPOSITORY PR作成
-実装 OWNER/REPOSITORY おまかせ 3件 PR作成
+実装 OWNER/REPOSITORY おまかせ 5件 PR作成
 ```
 
 ## 入力情報
