@@ -153,6 +153,20 @@ class SharedAssetTests(unittest.TestCase):
                         f"shared assets may only reference {ALLOWED_OWNER_REFERENCE}",
                     )
 
+    def test_omakase_issue_limit_is_five(self) -> None:
+        paths = (
+            REPO_ROOT / "prompts" / "implement-issue.md",
+            REPO_ROOT / "prompts" / "quick-request.md",
+            REPO_ROOT / "templates" / "CHATGPT-WORK.project-instructions.md",
+            REPO_ROOT / "README.md",
+        )
+        legacy_limit = re.compile(r"1-3|最大3件|上限3件|`3件` を指定")
+        for path in paths:
+            with self.subTest(path=path.relative_to(REPO_ROOT).as_posix()):
+                text = path.read_text(encoding="utf-8")
+                self.assertIn("5件", text)
+                self.assertIsNone(legacy_limit.search(text))
+
 
 class BridgeTemplateTests(unittest.TestCase):
     """templates/CLAUDE.bridge.md becomes the target project's CLAUDE.md."""
