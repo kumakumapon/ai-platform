@@ -1,0 +1,1 @@
+Draft opened before adding an importable repository ruleset config. This temporary file will be removed.
