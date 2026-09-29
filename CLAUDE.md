@@ -18,9 +18,10 @@
 | 目的 | コマンド |
 | --- | --- |
 | unit test | `python -m unittest discover -s tests -v` |
-| ワークフロー構文の確認 | `python -c "import yaml,sys;[yaml.safe_load(open(p)) for p in sys.argv[1:]]" .github/workflows/*.yml templates/*.yml` |
+| ワークフロー・テンプレート YAML 構文の確認 | `python -c "import yaml,sys;[yaml.safe_load(open(p, encoding='utf-8')) for p in sys.argv[1:]]" .github/workflows/*.yml templates/*.yml` |
+| Python 構文の確認 | `python -m compileall -q scripts tests` |
 
-`scripts/` は標準ライブラリのみを使用します。依存パッケージを追加しないでください。
+`scripts/` は標準ライブラリのみを使用します。CI の YAML 構文検証には `requirements-ci.txt` に明記した PyYAML を使います。ローカルでは `python -m pip install -r requirements-ci.txt` でCIと同じ依存を導入してください。
 
 ## 変更時に注意する領域
 
