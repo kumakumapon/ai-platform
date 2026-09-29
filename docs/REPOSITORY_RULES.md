@@ -4,13 +4,11 @@ GitHub settings are repository administration, so they are not applied by a sour
 
 ## Recommended configuration
 
-1. Open **Settings → Rules → Rulesets → New branch ruleset**.
-2. Name it `Protect main`, set **Enforcement status** to **Active**, and target the branch name pattern `main`.
-3. Leave the bypass list empty so administrators and maintainers use the same merge gate.
-4. Enable **Restrict deletions** and **Block force pushes**.
-5. Require a pull request before merging. Do not require approvals (this repository is maintained by one person; CODEOWNERS/approval policy is out of scope).
-6. Require the `test` status check from **Repository CI**. Require the branch to be up to date before merging so the check covers the current `main`.
-7. Save the ruleset and confirm its status in the Rulesets page.
+1. Download `.github/rulesets/protect-main.json` from this repository.
+2. Open **Settings → Rules → Rulesets → New ruleset → Import a ruleset**, select the JSON file, review it, then create the ruleset. GitHub documents importing repository rulesets from JSON in [Managing rulesets for a repository](https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/managing-rulesets-for-a-repository#importing-a-ruleset).
+3. Confirm enforcement is **Active**, target is `main`, and the bypass list is empty.
+4. The imported configuration requires a PR, requires the `test` status check and up-to-date branch, blocks force pushes, and prevents deletion. It does not require approvals (single maintainer; CODEOWNERS/approval policy is out of scope).
+5. Save and confirm the ruleset appears on the Rulesets page.
 
 With the PR requirement active and no bypass actors, normal direct pushes to `main` are blocked. The deletion and force-push rules prevent those operations as well. Emergency work should use a PR with the same CI check; if a temporary bypass is unavoidable, an administrator should document the reason and remove the exception immediately afterward.
 
@@ -20,4 +18,4 @@ After saving, verify the ruleset targets `main`, is active, has no bypass actors
 
 ## Automation boundary
 
-The GitHub connector available for this work can read repository settings but cannot create or update rulesets. This document is the exact configuration to apply; the issue's runtime protection conditions remain pending until an administrator applies and verifies it in GitHub.
+The repository contains an importable JSON configuration, but the connected GitHub operations cannot create or update repository rulesets. The issue's runtime protection conditions remain pending until a repository administrator imports the file and verifies it in GitHub.
