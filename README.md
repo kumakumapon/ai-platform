@@ -251,9 +251,10 @@ jobs:
     permissions:
       contents: read
       pull-requests: write # comment_on_pr: true の場合だけ
-    uses: kumakumapon/ai-platform/.github/workflows/reusable-ci-summary.yml@main
+    uses: kumakumapon/ai-platform/.github/workflows/reusable-ci-summary.yml@v1.0.0
     with:
       log_file: .ai-platform-failure-log/failed-ci.log
+      platform_ref: v1.0.0
       log_artifact_name: failed-ci-log
       workflow_name: CI
       run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
@@ -281,3 +282,22 @@ jobs:
 - Issue・PR・CI 情報を GitHub API から取得するコンテキスト生成アダプタ
 - 複数リポジトリへのテンプレート適用状況を確認するチェックリスト
 - ルール・テンプレートのバージョン固定と互換性ポリシー
+
+
+## バージョニングと互換性
+
+このリポジトリは Semantic Versioning（SemVer）で公開します。タグと GitHub Release は `vMAJOR.MINOR.PATCH` 形式です。
+
+- **MAJOR**: 既存利用者に移行作業が必要な破壊的変更。Reusable Workflow input の削除・改名、テンプレートやプロンプトの入力・意味の非互換変更、同期対象・エージェント名・command 名の削除や改名を含みます。
+- **MINOR**: 後方互換性を保つ機能・テンプレート・任意 input の追加。
+- **PATCH**: 後方互換性を保つ不具合修正、文書や検証の改善。
+
+既存の公開 input の意味やデフォルト変更も、利用側の挙動を変える場合は breaking change として扱います。公開インターフェースを変更するPRは、互換性への影響と移行方法を説明してください。変更履歴は `CHANGELOG.md` に記録します。
+
+Reusable Workflow と内部スクリプトは同じリリース ref に固定します。利用側では workflow の `uses: ...@v1.0.0` と `with.platform_ref: v1.0.0` を揃えます。更新時は両方を同じバージョンに変更します。既存の `@main` 利用者は、両方を `v1.0.0` に揃えるPRを作成し、CI成功後にマージしてください。以後は必要なバージョンへの明示的な更新PRで追随します。
+
+初回の正式Releaseは、この変更を main にマージした後、`v1.0.0` タグを作成して公開します。タグ公開前はバージョン参照例は準備状態です。
+
+## main ブランチ保護
+
+`main` のRuleset作成手順と推奨設定は [docs/REPOSITORY_RULES.md](docs/REPOSITORY_RULES.md) に記録しています。Ruleset は GitHub 上で適用してください。必須CIの名前は `test` です。

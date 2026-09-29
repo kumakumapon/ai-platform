@@ -25,9 +25,10 @@ permissions:
 
 jobs:
   summarize:
-    uses: kumakumapon/ai-platform/.github/workflows/reusable-ci-summary.yml@main
+    uses: kumakumapon/ai-platform/.github/workflows/reusable-ci-summary.yml@v1.0.0
     with:
       log_file: ${{ inputs.log_file }}
+      platform_ref: v1.0.0
       log_artifact_name: ${{ inputs.log_artifact_name }}
       workflow_name: ${{ inputs.workflow_name }}
       run_url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}

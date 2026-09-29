@@ -32,6 +32,11 @@ on:
         required: false
         type: boolean
         default: false
+      platform_ref:
+        description: AI Platform release ref used to check out its helper scripts
+        required: false
+        type: string
+        default: v1.0.0
     secrets:
       platform_read_token:
         description: Optional read-only token for checking out a private AI Platform repository
@@ -63,7 +68,7 @@ jobs:
         continue-on-error: true
         with:
           repository: kumakumapon/ai-platform
-          ref: main
+          ref: ${{ inputs.platform_ref }}
           path: .ai-platform
           token: ${{ secrets.platform_read_token || github.token }}
           persist-credentials: false
